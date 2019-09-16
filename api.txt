@@ -1,0 +1,49 @@
+hhtp code *
+
+{
+    status: ok / error
+    message: error message
+    data: {}
+}
+
+------------------------------------------
+
+http code >= 400
+{
+    message: ...
+}
+
+'Ошибка сети'
+
+
+
+http code < 400
+{
+    ....
+}
+
+-------
+
+{}
+?
+
+-------
+
+/service/objects
+
+{
+    objects: [ ... , ...]
+}
+
+/service/object
+
+{
+    id:
+    title: ..
+}
+
+{
+    object: {
+     ...
+    }
+}

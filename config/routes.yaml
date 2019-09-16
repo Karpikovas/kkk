@@ -1,0 +1,3 @@
+upload_file:
+  path: /upload
+  controller: App\Controller\FileController::uploadFile
