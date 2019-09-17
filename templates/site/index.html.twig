@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LIST{% endblock %}
+
+{% block body %}
+
+  <section>
+    <button id="addButton">ADD NEW</button>
+
+    <div id="create">
+      <br/>
+      <form id="createForm" method="post">
+        Name: <input type="text" id="name" name="name" required pattern="[A-Za-z]+"/><br/><br/>
+        Secondname: <input type="text" id="secondName" name="secondName" required pattern="[A-Za-z]+"/><br/><br/>
+        Patr: <input type="text" id="patr" name="patr" required pattern="[A-Za-z]+"/><br/><br/>
+        Birthday: <input type="date" id="birthday" name="birthday" required/><br/><br/>
+        <input id="addNew" type="submit" value="ADD" name="submit"/>
+      </form>
+    </div>
+
+    <br/>
+    <br/>
+
+    <table border="1" id="content">
+      <thead>
+      {% for hi in header %}
+        <th>{{ hi }}</th>
+      {% endfor %}
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </section>
+
+{% endblock %}
+
+
+{% block scripts %}
+  <script src="js/script2.js"></script>
+{% endblock %}
+
+
+{% block styles %}
+  <style>
+    #create {
+      display: none;
+    }
+  </style>
+{% endblock %}

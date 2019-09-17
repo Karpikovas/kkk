@@ -1,3 +1,7 @@
 upload_file:
   path: /upload
-  controller: App\Controller\FileController::uploadFile
+  controller: App\Controller\TrackController::uploadFile
+
+download_file:
+  path: /download/{fileName}
+  controller: App\Controller\TrackController::downloadFile

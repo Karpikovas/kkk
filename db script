@@ -1,0 +1,70 @@
+CREATE TABLE `Category` (
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `Tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `category_name` varchar(45) NOT NULL,
+  `color` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `category_idx` (`category_name`),
+  CONSTRAINT `category` FOREIGN KEY (`category_name`) REFERENCES `Category` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `Track` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `datetime` datetime NOT NULL,
+  `path` varchar(128) DEFAULT NULL,
+  `comment` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `TrackHasTags` (
+  `id_tag` int(11) NOT NULL,
+  `id_track` int(11) NOT NULL,
+  PRIMARY KEY (`id_tag`,`id_track`),
+  KEY `id_idx` (`id_track`),
+  CONSTRAINT `id_tag` FOREIGN KEY (`id_tag`) REFERENCES `Tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `id_track` FOREIGN KEY (`id_track`) REFERENCES `Track` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+INSERT INTO `musiclibrary`.`Category` (`name`) VALUES ('Категория_1');
+INSERT INTO `musiclibrary`.`Category` (`name`) VALUES ('Категория_2');
+INSERT INTO `musiclibrary`.`Category` (`name`) VALUES ('Категория_3');
+
+INSERT INTO `musiclibrary`.`Tag` (`name`, `category_name`, `color`) VALUES ('тэг_1', 'Категория_1', '#FA8072');
+INSERT INTO `musiclibrary`.`Tag` (`name`, `category_name`, `color`) VALUES ('тэг_2', 'Категория_1', '#FF1493');
+INSERT INTO `musiclibrary`.`Tag` (`name`, `category_name`, `color`) VALUES ('тэг_3', 'Категория_2', '#00FF00');
+INSERT INTO `musiclibrary`.`Tag` (`name`, `category_name`, `color`) VALUES ('тэг_4', 'Категория_2', '#00FFFF');
+INSERT INTO `musiclibrary`.`Tag` (`name`, `category_name`, `color`) VALUES ('тэг_5', 'Категория_2', '#FFFF00');
+INSERT INTO `musiclibrary`.`Tag` (`name`, `category_name`, `color`) VALUES ('тэг_6', 'Категория_3', '#DC143C');
+
+INSERT INTO `musiclibrary`.`Track` (`name`, `datetime`, `path`, `comment`) VALUES ('track1', '2019-09-13', '2019-09-13/track1.mp3', 'Это тестовый трек номер 1');
+INSERT INTO `musiclibrary`.`Track` (`name`, `datetime`, `path`, `comment`) VALUES ('rack2', '2019-09-14', '2019-09-14/track2.mp3', 'Это тестовый комментарий для трека 2, который находится в другой папке ');
+
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('1', '1');
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('3', '1');
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('5', '1');
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('1', '2');
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('2', '2');
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('4', '2');
+INSERT INTO `musiclibrary`.`TrackHasTags` (`id_tag`, `id_track`) VALUES ('6', '2');
+
+
+SELECT *
+FROM Track
+where
+	name LIKE '%трек%'
+    or comment LIKE '%трек%'
+    and datetime >= '2019-09-13'
+    and datetime <= '2019-09-14'
+    and id in
+		(SELECT distinct id_track
+		FROM Tag
+		inner join TrackHasTags on id = id_tag
+		where
+			name = 'тэг_2'
+			or name = 'тэг_2');
