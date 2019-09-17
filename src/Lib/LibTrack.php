@@ -13,129 +13,141 @@ class LibTrack
     $this->Db = $Db;
   }
 
-  public function getTracksList(string $start_date, string $end_date): array
+  public function getTracksList(?string $key, ?string $startDate, ?string $endDate, ?array $tags)
   {
-    $params = [
-        $start_date,
-        $end_date,
-        $start_date,
-        $end_date
-    ];
+    $params = [];
+    $sql = 'select
+              id, 
+              name, 
+              datetime, 
+              comment 
+            from Track';
 
-    $cars = $this->Db->select('
-        select 
-            name, 
-            type, 
-            carrying, 
-            seats_count 
-        from Car
-        inner join (
-	          SELECT 
-	              Car.car_id 
-            from Car
-	          left join Rent on Rent.car_ID=Car.car_ID
-	          group by Car.car_id
-	          having
-	              sum(
-	                  (? < start_date AND ? < start_date)
-                    OR (? > end_date AND ? > end_date)
-                    OR (start_date IS NULL)) = COUNT(*)
-        ) as a on a.car_id = Car.car_id
-        order by name;',
-        $params
-    );
+    if ($key || $startDate || $endDate || $tags) {
+      $sql .= ' where';
+      $flagAnd = false;
 
-    return $cars;
+      if ($key) {
+        $params[] = '%'.$key.'%';
+        $params[] = '%'.$key.'%';
+        $sql .= ' name LIKE ? or comment LIKE ?';
+
+        $flagAnd = true;
+      }
+
+      if ($startDate) {
+        if ($flagAnd) {
+          $sql .= ' and';
+        } else {
+          $flagAnd = true;
+        }
+        $params[] = $startDate;
+        $sql .= ' datetime >= ?';
+      }
+
+      if ($endDate) {
+        if ($flagAnd) {
+          $sql .= ' and';
+        } else {
+          $flagAnd = true;
+        }
+        $params[] = $endDate;
+        $sql .= ' datetime <= ?';
+      }
+
+      if ($tags) {
+        if ($flagAnd) {
+          $sql .= ' and';
+        } else {
+          $flagAnd = true;
+        }
+        $sql .= ' id in (SELECT distinct id_track FROM LibTag inner join TrackHasTags on id = id_tag where';
+
+        $flagOr = false;
+
+        foreach ($tags as $tag) {
+          if ($flagOr) {
+            $sql .= ' or';
+          } else {
+            $flagOr = true;
+          }
+          $sql .= ' name = ?';
+          $params[] = $tag;
+        }
+        $sql .= ')';
+      }
+
+    }
+
+    return $this->Db->select($sql, $params);
   }
 
-  public function addNewCar(string $type, string $name, string $fuel_type,
-                             $carrying, $seats_count, $comment, string $owner_ID): bool
+  public function addNewTrack(?string $name, ?string $path, ?string $datetime, ?string $comment): bool
   {
     $params = [
-        $type,
-        $name,
-        $fuel_type,
-        $carrying,
-        $seats_count,
-        $comment,
-        $owner_ID
-    ];
-
-    return $this->Db->exec('
-        INSERT INTO Car(
-            type, 
-            name, 
-            fuel_type, 
-            carrying, 
-            seats_count, 
-            comment, 
-            owner_ID)
-         VALUES(?, ?, ?, ?, ?, ?, ?);',
-        $params
-    );
-  }
-
-  public function deleteCarByID(int $carID): bool
-  {
-    return $this->Db->exec('DELETE FROM Car WHERE car_ID = ?;', [$carID]);
-  }
-
-  public function updateCarInfo(string $type, string $name, string $fuel_type,
-                                $carrying, $seats_count, $comment, string $owner_ID, string $carID): bool
-  {
-    $params = [
-        $type,
-        $name,
-        $fuel_type,
-        $carrying,
-        $seats_count,
-        $comment,
-        $owner_ID,
-        $carID
+      $name,
+      $datetime,
+      $path,
+      $comment
     ];
 
     return $this->Db->exec('
-        UPDATE Car SET 
-            type=?, 
-            name=?, 
-            fuel_type=?, 
-            carrying=?, 
-            seats_count=?, 
-            comment=?, 
-            owner_ID=?
-         WHERE car_ID=?;',
+        INSERT INTO Track (
+            name, 
+            datetime, 
+            path, 
+            comment) 
+        VALUES (?, ?, ?, ?);
+        
+        ',
         $params
     );
   }
-  public function getMostUsedCars()
+
+  public function updateTrackByID(string $ID, ?string $comment): bool
   {
+    $params = [
+        $comment,
+        $ID
+    ];
+
+    return $this->Db->exec('
+        UPDATE Track SET 
+            comment=? 
+         WHERE id=?;',
+        $params
+    );
+  }
+
+  public function deleteTrackByID(string $ID): bool
+  {
+    $params = [
+        $ID
+    ];
+    return $this->Db->exec('DELETE FROM Track WHERE id = ?;', $params);
+  }
+
+  public function getTrackPathByID(string $ID) {
+    $params = [
+      $ID
+    ];
+
+    return $this->Db->select('select path from Track where id = ?', $params);
+  }
+  public function getTagsByID(string $ID)
+  {
+    $params = [
+        $ID
+    ];
+
     return $this->Db->select('
-        select 
-          Car.car_ID,
-            Car.name,
-            count(*) as count_of_rents, 
-            SUM(TIMESTAMPDIFF(HOUR,start_date, end_date)) as count_of_hours,
-            SUM(case when end_date < now() then cost else 0 end) as payout
-        from Rent
-        inner join Car on Car.car_ID = Rent.car_ID
-        group by car_ID
-        having
-          payout > 10000
-        order by count_of_hours DESC;
-    ');
+        SELECT 
+            name 
+        FROM musiclibrary.TrackHasTags
+        inner join Tag on id = id_tag 
+        where id_track = ?;
+    ',
+        $params);
   }
 }
 
-/*
- *
-  select
-	car_ID,
-    count(*) as count_of_rents,
-    SUM(TIMESTAMPDIFF(HOUR,start_date, end_date)) as count_of_hours,
-    SUM(case when end_date < now() then cost else 0 end) as payout
-from Rent
-group by car_ID
-having
-	payout > 10000
-order by count_of_hours DESC;
-*/

@@ -7,12 +7,12 @@ parameters:
     DATABASE_PORT: 3306
     DATABASE_HOST: 192.168.56.40
 
-    # DATABASE_USER: site_user
-    # DATABASE_PASSWORD: qwe$123456
+    DATABASE_USER: site_user
+    DATABASE_PASSWORD: qwe$123456
 
 
-    DATABASE_USER: root1
-    DATABASE_PASSWORD: 123
+    #DATABASE_USER: root1
+    #DATABASE_PASSWORD: 123
 
     DATABASE_NAME: musiclibrary
 

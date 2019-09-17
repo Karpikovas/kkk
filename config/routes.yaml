@@ -1,7 +1,37 @@
+#----- Links for Track
 upload_file:
-  path: /upload
+  path: /tracks/upload
   controller: App\Controller\TrackController::uploadFile
 
 download_file:
-  path: /download/{fileName}
+  path: /tracks/download/{fileID}
   controller: App\Controller\TrackController::downloadFile
+
+update_file:
+  path: /tracks/update/{fileID}
+  controller: App\Controller\TrackController::updateFileInfo
+
+delete_file:
+  path: /tracks/delete/{fileID}
+  controller: App\Controller\TrackController::deleteFile
+
+tracks:
+  path: /tracks
+  controller: App\Controller\TrackController::getTracksList
+
+# ----- Links for Tag
+tags:
+  path: /tags
+  controller: App\Controller\TagController::getTagsList
+
+add_new_tag:
+  path: /tags/add
+  controller: App\Controller\TagController::addNewTrack
+
+delete_tag:
+  path: /tags/delete/{tagID}
+  controller: App\Controller\TagController::deleteTag
+
+update_tag:
+  path: /tags/update/{tagID}
+  controller: App\Controller\TagController::updateTag

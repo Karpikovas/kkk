@@ -1,34 +1,23 @@
 <?php
 
-/*
-  Generate cookie
-*/
-//$bytes = random_bytes(60);
-//var_dump(bin2hex($bytes));
-//
+$arr = [
+  1,
+  2,
+  3
+];
 
-/*
-  Generate hash
-*/
+$arr_bd = [
+  2,
+  3,
+  4
+];
 
-/*$password = 'root';
-$hash = password_hash($password, PASSWORD_BCRYPT );
+$diff = array_diff($arr, $arr_bd);
+print_r($diff);
 
-$flag = password_verify($password, $hash);
+$diff = array_diff($arr_bd, $arr);
+print_r($diff);
 
-var_dump($hash);
-*/
-
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Filesystem\Filesystem;
-
-$filesystem = new Filesystem();
-
-try {
-  $filesystem->mkdir(sys_get_temp_dir().'/'.random_int(0, 1000));
-} catch (IOExceptionInterface $exception) {
-  echo "An error occurred while creating your directory at ".$exception->getPath();
-}
 
 
 
