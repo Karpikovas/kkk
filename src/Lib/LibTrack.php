@@ -142,12 +142,45 @@ class LibTrack
 
     return $this->Db->select('
         SELECT 
-            name 
+            id 
         FROM musiclibrary.TrackHasTags
         inner join Tag on id = id_tag 
         where id_track = ?;
     ',
         $params);
+  }
+
+  public function addTracksTagByID(string $ID, string $tagID)
+  {
+    $params = [
+        $tagID,
+        $ID
+    ];
+
+    return $this->Db->exec('
+        INSERT INTO TrackHasTags (
+            id_tag, 
+            id_track) 
+        VALUES (?, ?);
+        
+        ',
+        $params
+    );
+
+  }
+
+  public function deleteTracksTagByID(string $ID, string $tagID)
+  {
+    $params = [
+        $tagID,
+        $ID
+    ];
+
+    return $this->Db->exec('
+        DELETE FROM TrackHasTags where id_tag = ? and id_track = ? ',
+        $params
+    );
+
   }
 }
 

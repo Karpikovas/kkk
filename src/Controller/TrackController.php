@@ -58,29 +58,29 @@ class TrackController extends AbstractController
 
     $tags = $request->request->get('tags');
     if ($tags) {
-      $tags = explode(',', $tags);
-//      $tagsArray = [];
-//      foreach ($tags as $tag) {
-//
-//        $tagsArray[] = [
-//            "name"=> $tag
-//        ];
-//      }
+      $tags = explode(' ', $tags);
+
+      $currentTags = [];
+      foreach ($track->getTagsByID($fileID) as $tag) {
+        $currentTags[] = $tag["id"];
+      }
+
+      $newTags = array_values(array_diff($tags, $currentTags));
+      $deletedTags = array_values(array_diff($currentTags, $tags));
+
+      foreach ($newTags as $tag) {
+        $track->addTracksTagByID($fileID, $tag);
+      }
+
+      foreach ($deletedTags as $tag) {
+        $track->deleteTracksTagByID($fileID, $tag);
+      }
+
     }
-
-    $currentTags = [];
-    foreach ($track->getTagsByID($fileID) as $tag) {
-      $currentTags[] = $tag["name"];
-    }
-    //$currentTags = array_values($track->getTagsByID($fileID));
-
-
-    $newTags = array_values(array_diff($tags, $currentTags));
-    $deletedTags = array_values(array_diff($currentTags, $tags));
 
     $track->updateTrackByID($fileID,  $comment);
 
-    return $this->json(['status' => "OK", 'message' => [], 'data' => [$deletedTags]]);
+    return $this->json(['status' => "OK", 'message' => [], 'data' => ["new" => $newTags, "deleted" => $deletedTags]]);
   }
 
   /*
