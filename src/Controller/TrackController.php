@@ -30,7 +30,8 @@ class TrackController extends AbstractController
     $date = date("Y-m-d");
     $datetime = date("Y-m-d h:m:s");
     $dir = $fileDir.'/'.$date.'/';
-    $path = $date.'/'.$safeFileName;
+
+    $path = $date.'/'.$safeFileName.'.'.$type;
 
     $filesystem = new Filesystem();
 
@@ -39,7 +40,7 @@ class TrackController extends AbstractController
       $filesystem->mkdir($dir);
     };
 
-    move_uploaded_file($tmp_path, $fileDir.'/'.$path.'.'.$type);
+    move_uploaded_file($tmp_path, $fileDir.'/'.$path);
 
     $track->addNewTrack($originalFilename, $path, $datetime, NULL);
 

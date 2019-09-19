@@ -1,49 +1,220 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}LIST{% endblock %}
 
 {% block body %}
+  <div class="card ">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          Название трека
+        </div>
+        <div class="col-lg-1">
+          <a class="btn" data-toggle="modal" data-target="#deleteModal">
+            <span class="fas fa-trash-alt btn-delete"/>
+          </a>
+        </div>
+        <div class="col-md-auto">
+          <a class="btn" data-toggle="modal" data-target="#exampleModal">
+            <span class="fas fa-edit"/>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-muted">
+          12.12.2019 13:00
+        </div>
+      </div>
 
-  <section>
-    <button id="addButton">ADD NEW</button>
-
-    <div id="create">
-      <br/>
-      <form id="createForm" method="post">
-        Name: <input type="text" id="name" name="name" required pattern="[A-Za-z]+"/><br/><br/>
-        Secondname: <input type="text" id="secondName" name="secondName" required pattern="[A-Za-z]+"/><br/><br/>
-        Patr: <input type="text" id="patr" name="patr" required pattern="[A-Za-z]+"/><br/><br/>
-        Birthday: <input type="date" id="birthday" name="birthday" required/><br/><br/>
-        <input id="addNew" type="submit" value="ADD" name="submit"/>
-      </form>
     </div>
+    <div class="card-body text-right">
+      <audio-control></audio-control>
+      <span class="badge badge-pill badge-secondary tag">Secondary</span>
+      <span class="badge badge-pill badge-success tag">Success</span>
+      <span class="badge badge-pill badge-danger tag">Danger</span>
+      <span class="badge badge-pill badge-warning tag">Warning</span>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    </div>
+  </div>
 
-    <br/>
-    <br/>
+  <div class="card ">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          Название трека
+        </div>
+        <div class="col-lg-1">
+          <a class="btn" data-toggle="modal" data-target="#deleteModal">
+            <span class="fas fa-trash-alt btn-delete"/>
+          </a>
+        </div>
+        <div class="col-md-auto">
+          <a class="btn" data-toggle="modal" data-target="#exampleModal">
+            <span class="fas fa-edit"/>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-muted">
+          12.12.2019 13:00
+        </div>
+      </div>
 
-    <table border="1" id="content">
-      <thead>
-      {% for hi in header %}
-        <th>{{ hi }}</th>
-      {% endfor %}
-      </thead>
-      <tbody></tbody>
-    </table>
+    </div>
+    <div class="card-body text-right">
+      <audio-control></audio-control>
+      <span class="badge badge-pill badge-secondary tag">Secondary</span>
+      <span class="badge badge-pill badge-success tag">Success</span>
+      <span class="badge badge-pill badge-danger tag">Danger</span>
+      <span class="badge badge-pill badge-warning tag">Warning</span>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    </div>
+  </div>
 
-  </section>
+  <div class="card ">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          Название трека
+        </div>
+        <div class="col-lg-1">
+          <a class="btn" data-toggle="modal" data-target="#deleteModal">
+            <span class="fas fa-trash-alt btn-delete"/>
+          </a>
+        </div>
+        <div class="col-md-auto">
+          <a class="btn" data-toggle="modal" data-target="#exampleModal">
+            <span class="fas fa-edit"/>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-muted">
+          12.12.2019 13:00
+        </div>
+      </div>
+
+    </div>
+    <div class="card-body text-right">
+      <audio-control></audio-control>
+      <span class="badge badge-pill badge-secondary tag">Secondary</span>
+      <span class="badge badge-pill badge-success tag">Success</span>
+      <span class="badge badge-pill badge-danger tag">Danger</span>
+      <span class="badge badge-pill badge-warning tag">Warning</span>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    </div>
+  </div>
+  <div class="card ">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          Название трека
+        </div>
+        <div class="col-lg-1">
+          <a class="btn" data-toggle="modal" data-target="#deleteModal">
+            <span class="fas fa-trash-alt btn-delete"/>
+          </a>
+        </div>
+        <div class="col-md-auto">
+          <a class="btn" data-toggle="modal" data-target="#exampleModal">
+            <span class="fas fa-edit"/>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-muted">
+          12.12.2019 13:00
+        </div>
+      </div>
+
+    </div>
+    <div class="card-body text-right">
+      <audio-control></audio-control>
+      <span class="badge badge-pill badge-secondary tag">Secondary</span>
+      <span class="badge badge-pill badge-success tag">Success</span>
+      <span class="badge badge-pill badge-danger tag">Danger</span>
+      <span class="badge badge-pill badge-warning tag">Warning</span>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    </div>
+  </div>
+
+
+
+  <!--------------Модальное окно редактирования аудио------------------->
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Редактировать</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="name" class="col-form-label">Название:</label>
+              <input type="text" class="form-control" id="name">
+            </div>
+            <div class="form-group">
+              <label for="comment-text" class="col-form-label">Комментарий:</label>
+              <textarea class="form-control" id="comment-text"></textarea>
+            </div>
+            <div>
+
+              </button>
+              <span class="badge badge-pill badge-success tag">Success
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                   </span>
+              <span class="badge badge-pill badge-danger tag">Danger
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                   </span>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Сохранить изменения</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--------------------Модальное окно удаления------------------->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Удаление</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Удалить всю информацию о данном треке?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger">Удалить</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
 
 
 {% block scripts %}
-  <script src="js/script2.js"></script>
+  <script src="js/components/AudioControl.js"></script>
+  <script src="js/components/SimpleSlider.js"></script>
+  <script src="js/components/VolumeSlider.js"></script>
 {% endblock %}
 
 
 {% block styles %}
-  <style>
-    #create {
-      display: none;
-    }
-  </style>
+
 {% endblock %}
