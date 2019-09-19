@@ -79,15 +79,12 @@ span {
   flex-grow: 1;
   align-items: center;
   justify-content: center;
+  margin-top: 5em;
 }
 
 .card {
   background: #4B0082;
   margin-top: 2em;
-}
-
-.card:first-child {
-  margin-top: 5em;
 }
 
 .navbar {
@@ -130,6 +127,11 @@ span {
 }
 .dropdown {
   display: inline-block;
+}
+
+.label_download {
+  color: #4B0082;
+  font-size: 18px;
 }
 
 

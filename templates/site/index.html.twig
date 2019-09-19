@@ -1,141 +1,366 @@
 {% extends 'base.html.twig' %}
 
+{% block header %}
+  <div class="collapse navbar-collapse text-center" id="navbarCollapse">
+
+    <a class="btn">
+      <span class="fas fa-download"/>
+    </a>
+
+    <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+
+      <!-------------------Поле для поиска------------------>
+      <li class="nav-item">
+        <input type="text" class="form-control" placeholder="Поиск" aria-label="Поиск" aria-describedby="button-addon2">
+      </li>
+
+      <!----------------Dropdown со списком категорий-------------->
+
+      <li class="nav-item">
+        <div class="dropdown show">
+          <a
+                  class="btn btn-outline-light dropdown-toggle"
+                  href="#"
+                  role="button"
+                  id="dropdownMenuLink"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+            Категория
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
+      </li>
+
+      <!----------------------------Тэги---------------------------->
+
+      <li class="nav-item">
+        <span class="badge badge-pill badge-primary tag">Primary</span>
+        <span class="badge badge-pill badge-secondary tag">Secondary</span>
+        <span class="badge badge-pill badge-success tag">Success</span>
+        <span class="badge badge-pill badge-danger tag">Danger</span>
+        <span class="badge badge-pill badge-warning tag">Warning</span>
+        <span class="badge badge-pill badge-info tag">Info</span>
+        <span class="badge badge-pill badge-light tag">Light</span>
+        <span class="badge badge-pill badge-dark tag">Dark</span>
+        <span class="badge badge-pill badge-primary tag">Primary</span>
+        <span class="badge badge-pill badge-secondary tag">Secondary</span>
+        <span class="badge badge-pill badge-success tag">Success</span>
+        <span class="badge badge-pill badge-danger tag">Danger</span>
+        <span class="badge badge-pill badge-warning tag">Warning</span>
+
+        <!----------------Формы для заполнения дат------------------>
+
+      </li>
+      <li class="nav-item">
+        <a class="btn " data-toggle="collapse" data-target="#newTag">
+          <span class="fas fa-plus-circle btn-new-tag"></span>
+        </a>
+
+        <div class="collapse" id="newTag">
+
+
+          <div class="input-group mb-3">
+
+            <div class="input-group-prepend">
+              <button class="btn btn-outline-light dropdown-toggle"
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                Категория
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div role="separator" class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+            </div>
+
+            <input type="text" class="form-control" placeholder="Название тэга" aria-label="Название тэга" aria-describedby="button-addon2">
+
+          </div>
+          <input type="color" id="head" name="head" value="#e66465" placeholder="Цвет тэга" aria-label="Цвет тэга">
+        </div>
+
+      </li>
+      <li class="nav-item mb-5">
+
+        <div class="mb-4">
+          Даты начала и окончания периода
+        </div>
+        <div class="input-group">
+
+          <input type="date" name="bday" max="3000-12-31"
+                 min="1000-01-01" class="form-control">
+          <input type="date" name="bday" min="1000-01-01"
+                 max="3000-12-31" class="form-control">
+        </div>
+
+
+      </li>
+
+    </ul>
+
+  </div><div class="collapse navbar-collapse text-center" id="navbarCollapse">
+
+  <a class="btn">
+    <span class="fas fa-download"/>
+  </a>
+
+  <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+
+    <!-------------------Поле для поиска------------------>
+    <li class="nav-item">
+      <input type="text" class="form-control" placeholder="Поиск" aria-label="Поиск" aria-describedby="button-addon2">
+    </li>
+
+    <!----------------Dropdown со списком категорий-------------->
+
+    <li class="nav-item">
+      <div class="dropdown show">
+        <a
+                class="btn btn-outline-light dropdown-toggle"
+                href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+          Категория
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </div>
+    </li>
+
+    <!----------------------------Тэги---------------------------->
+
+    <li class="nav-item">
+      <span class="badge badge-pill badge-primary tag">Primary</span>
+      <span class="badge badge-pill badge-secondary tag">Secondary</span>
+      <span class="badge badge-pill badge-success tag">Success</span>
+      <span class="badge badge-pill badge-danger tag">Danger</span>
+      <span class="badge badge-pill badge-warning tag">Warning</span>
+      <span class="badge badge-pill badge-info tag">Info</span>
+      <span class="badge badge-pill badge-light tag">Light</span>
+      <span class="badge badge-pill badge-dark tag">Dark</span>
+      <span class="badge badge-pill badge-primary tag">Primary</span>
+      <span class="badge badge-pill badge-secondary tag">Secondary</span>
+      <span class="badge badge-pill badge-success tag">Success</span>
+      <span class="badge badge-pill badge-danger tag">Danger</span>
+      <span class="badge badge-pill badge-warning tag">Warning</span>
+
+      <!----------------Формы для заполнения дат------------------>
+
+    </li>
+    <li class="nav-item">
+      <a class="btn " data-toggle="collapse" data-target="#newTag">
+        <span class="fas fa-plus-circle btn-new-tag"></span>
+      </a>
+
+      <div class="collapse" id="newTag">
+
+
+        <div class="input-group mb-3">
+
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-light dropdown-toggle"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              Категория
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+              <div role="separator" class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+          </div>
+
+          <input type="text" class="form-control" placeholder="Название тэга" aria-label="Название тэга" aria-describedby="button-addon2">
+
+        </div>
+        <input type="color" id="head" name="head" value="#e66465" placeholder="Цвет тэга" aria-label="Цвет тэга">
+      </div>
+
+    </li>
+    <li class="nav-item mb-5">
+
+      <div class="mb-4">
+        Даты начала и окончания периода
+      </div>
+      <div class="input-group">
+
+        <input type="date" name="bday" max="3000-12-31"
+               min="1000-01-01" class="form-control">
+        <input type="date" name="bday" min="1000-01-01"
+               max="3000-12-31" class="form-control">
+      </div>
+
+
+    </li>
+
+  </ul>
+
+</div>
+{% endblock %}
 
 {% block body %}
-  <div class="card ">
-    <div class="card-header">
-      <div class="row">
-        <div class="col">
-          Название трека
-        </div>
-        <div class="col-lg-1">
-          <a class="btn" data-toggle="modal" data-target="#deleteModal">
-            <span class="fas fa-trash-alt btn-delete"/>
-          </a>
-        </div>
-        <div class="col-md-auto">
-          <a class="btn" data-toggle="modal" data-target="#exampleModal">
-            <span class="fas fa-edit"/>
-          </a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-muted">
-          12.12.2019 13:00
-        </div>
-      </div>
+  <div class="container">
 
-    </div>
-    <div class="card-body text-right">
-      <audio-control></audio-control>
-      <span class="badge badge-pill badge-secondary tag">Secondary</span>
-      <span class="badge badge-pill badge-success tag">Success</span>
-      <span class="badge badge-pill badge-danger tag">Danger</span>
-      <span class="badge badge-pill badge-warning tag">Warning</span>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    </div>
-  </div>
 
-  <div class="card ">
-    <div class="card-header">
-      <div class="row">
-        <div class="col">
-          Название трека
-        </div>
-        <div class="col-lg-1">
-          <a class="btn" data-toggle="modal" data-target="#deleteModal">
-            <span class="fas fa-trash-alt btn-delete"/>
-          </a>
-        </div>
-        <div class="col-md-auto">
-          <a class="btn" data-toggle="modal" data-target="#exampleModal">
-            <span class="fas fa-edit"/>
-          </a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-muted">
-          12.12.2019 13:00
-        </div>
-      </div>
 
-    </div>
-    <div class="card-body text-right">
-      <audio-control></audio-control>
-      <span class="badge badge-pill badge-secondary tag">Secondary</span>
-      <span class="badge badge-pill badge-success tag">Success</span>
-      <span class="badge badge-pill badge-danger tag">Danger</span>
-      <span class="badge badge-pill badge-warning tag">Warning</span>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    </div>
-  </div>
 
-  <div class="card ">
-    <div class="card-header">
-      <div class="row">
-        <div class="col">
-          Название трека
-        </div>
-        <div class="col-lg-1">
-          <a class="btn" data-toggle="modal" data-target="#deleteModal">
-            <span class="fas fa-trash-alt btn-delete"/>
-          </a>
-        </div>
-        <div class="col-md-auto">
-          <a class="btn" data-toggle="modal" data-target="#exampleModal">
-            <span class="fas fa-edit"/>
-          </a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-muted">
-          12.12.2019 13:00
-        </div>
-      </div>
 
-    </div>
-    <div class="card-body text-right">
-      <audio-control></audio-control>
-      <span class="badge badge-pill badge-secondary tag">Secondary</span>
-      <span class="badge badge-pill badge-success tag">Success</span>
-      <span class="badge badge-pill badge-danger tag">Danger</span>
-      <span class="badge badge-pill badge-warning tag">Warning</span>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    </div>
-  </div>
-  <div class="card ">
-    <div class="card-header">
-      <div class="row">
-        <div class="col">
-          Название трека
-        </div>
-        <div class="col-lg-1">
-          <a class="btn" data-toggle="modal" data-target="#deleteModal">
-            <span class="fas fa-trash-alt btn-delete"/>
-          </a>
-        </div>
-        <div class="col-md-auto">
-          <a class="btn" data-toggle="modal" data-target="#exampleModal">
-            <span class="fas fa-edit"/>
-          </a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-muted">
-          12.12.2019 13:00
-        </div>
-      </div>
+  {#<div class="card ">#}
+    {#<div class="card-header">#}
+      {#<div class="row">#}
+        {#<div class="col">#}
+          {#Название трека#}
+        {#</div>#}
+        {#<div class="col-lg-1">#}
+          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
+            {#<span class="fas fa-trash-alt btn-delete"/>#}
+          {#</a>#}
+        {#</div>#}
+        {#<div class="col-md-auto">#}
+          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
+            {#<span class="fas fa-edit"/>#}
+          {#</a>#}
+        {#</div>#}
+      {#</div>#}
+      {#<div class="row">#}
+        {#<div class="col text-muted">#}
+          {#12.12.2019 13:00#}
+        {#</div>#}
+      {#</div>#}
 
-    </div>
-    <div class="card-body text-right">
-      <audio-control></audio-control>
-      <span class="badge badge-pill badge-secondary tag">Secondary</span>
-      <span class="badge badge-pill badge-success tag">Success</span>
-      <span class="badge badge-pill badge-danger tag">Danger</span>
-      <span class="badge badge-pill badge-warning tag">Warning</span>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    </div>
-  </div>
+    {#</div>#}
+    {#<div class="card-body text-right">#}
+      {#<audio-control></audio-control>#}
+      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
+      {#<span class="badge badge-pill badge-success tag">Success</span>#}
+      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
+      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
+      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
+    {#</div>#}
+  {#</div>#}
+
+  {#<div class="card ">#}
+    {#<div class="card-header">#}
+      {#<div class="row">#}
+        {#<div class="col">#}
+          {#Название трека#}
+        {#</div>#}
+        {#<div class="col-lg-1">#}
+          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
+            {#<span class="fas fa-trash-alt btn-delete"/>#}
+          {#</a>#}
+        {#</div>#}
+        {#<div class="col-md-auto">#}
+          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
+            {#<span class="fas fa-edit"/>#}
+          {#</a>#}
+        {#</div>#}
+      {#</div>#}
+      {#<div class="row">#}
+        {#<div class="col text-muted">#}
+          {#12.12.2019 13:00#}
+        {#</div>#}
+      {#</div>#}
+
+    {#</div>#}
+    {#<div class="card-body text-right">#}
+      {#<audio-control></audio-control>#}
+      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
+      {#<span class="badge badge-pill badge-success tag">Success</span>#}
+      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
+      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
+      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
+    {#</div>#}
+  {#</div>#}
+
+  {#<div class="card ">#}
+    {#<div class="card-header">#}
+      {#<div class="row">#}
+        {#<div class="col">#}
+          {#Название трека#}
+        {#</div>#}
+        {#<div class="col-lg-1">#}
+          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
+            {#<span class="fas fa-trash-alt btn-delete"/>#}
+          {#</a>#}
+        {#</div>#}
+        {#<div class="col-md-auto">#}
+          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
+            {#<span class="fas fa-edit"/>#}
+          {#</a>#}
+        {#</div>#}
+      {#</div>#}
+      {#<div class="row">#}
+        {#<div class="col text-muted">#}
+          {#12.12.2019 13:00#}
+        {#</div>#}
+      {#</div>#}
+
+    {#</div>#}
+    {#<div class="card-body text-right">#}
+      {#<audio-control></audio-control>#}
+      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
+      {#<span class="badge badge-pill badge-success tag">Success</span>#}
+      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
+      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
+      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
+    {#</div>#}
+  {#</div>#}
+  {#<div class="card ">#}
+    {#<div class="card-header">#}
+      {#<div class="row">#}
+        {#<div class="col">#}
+          {#Название трека#}
+        {#</div>#}
+        {#<div class="col-lg-1">#}
+          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
+            {#<span class="fas fa-trash-alt btn-delete"/>#}
+          {#</a>#}
+        {#</div>#}
+        {#<div class="col-md-auto">#}
+          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
+            {#<span class="fas fa-edit"/>#}
+          {#</a>#}
+        {#</div>#}
+      {#</div>#}
+      {#<div class="row">#}
+        {#<div class="col text-muted">#}
+          {#12.12.2019 13:00#}
+        {#</div>#}
+      {#</div>#}
+
+    {#</div>#}
+    {#<div class="card-body text-right">#}
+      {#<audio-control></audio-control>#}
+      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
+      {#<span class="badge badge-pill badge-success tag">Success</span>#}
+      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
+      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
+      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
+    {#</div>#}
+  {#</div>#}
 
 
 
@@ -204,6 +429,7 @@
       </div>
     </div>
   </div>
+  </div>
 
 {% endblock %}
 
@@ -212,6 +438,7 @@
   <script src="js/components/AudioControl.js"></script>
   <script src="js/components/SimpleSlider.js"></script>
   <script src="js/components/VolumeSlider.js"></script>
+  <script src="js/script.js"></script>
 {% endblock %}
 
 

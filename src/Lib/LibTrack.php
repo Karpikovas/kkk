@@ -13,15 +13,10 @@ class LibTrack
     $this->Db = $Db;
   }
 
-  public function getTracksList(?string $key, ?string $startDate, ?string $endDate, ?array $tags)
+  public function getTracksList(string $startRow, ?string $key, ?string $startDate, ?string $endDate, ?array $tags)
   {
     $params = [];
-    $sql = 'select
-              id, 
-              name, 
-              datetime, 
-              comment 
-            from Track';
+    $sql = 'select id, name, datetime, comment from Track';
 
     if ($key || $startDate || $endDate || $tags) {
       $sql .= ' where';
@@ -78,8 +73,11 @@ class LibTrack
       }
 
     }
+    $params[] = (int)$startRow;
+    $sql .= ' order by datetime desc limit ?, 10;';
 
     return $this->Db->select($sql, $params);
+    //return $sql;
   }
 
   public function addNewTrack(?string $name, ?string $path, ?string $datetime, ?string $comment): bool
@@ -142,7 +140,9 @@ class LibTrack
 
     return $this->Db->select('
         SELECT 
-            id 
+            id_tag,
+            name, 
+            color 
         FROM musiclibrary.TrackHasTags
         inner join Tag on id = id_tag 
         where id_track = ?;

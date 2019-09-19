@@ -27,12 +27,28 @@ class LibDB
     }
   }
 
+  private function getType($item) {
+    if (is_int($item)) {
+      return PDO::PARAM_INT;
+    } else {
+      return PDO::PARAM_STR;
+    }
+  }
 
   public function select(string $sql, array $params = []): array
   {
     $this->testInitConnection();
     $stmt = $this->connection->prepare($sql);
-    $stmt->execute($params);
+
+    $i = 1;
+
+    foreach ($params as $param) {
+      $stmt->bindValue($i, $param, $this->getType($param));
+      $i++;
+    }
+
+    $stmt->execute();
+
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
     return $data;
@@ -42,7 +58,15 @@ class LibDB
   {
     $this->testInitConnection();
     $stmt = $this->connection->prepare($sql);
-    $error = $stmt->execute($params);
+
+    $i = 1;
+
+    foreach ($params as $param) {
+      $stmt->bindValue($i, $param, $this->getType($param));
+      $i++;
+    }
+
+    $error = $stmt->execute();
     $stmt->closeCursor();
     return $error;
   }

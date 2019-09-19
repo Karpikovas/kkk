@@ -111,6 +111,7 @@ class TrackController extends AbstractController
   }
 
   public function getTracksList(Request $request, LibTrack $track) {
+    $startRow = $request->query->get('row');
     $startDate = $request->query->get('start_date');
     $endDate = $request->query->get('end_date');
     $key = $request->query->get('key');
@@ -119,7 +120,11 @@ class TrackController extends AbstractController
       $tags = explode(',', $tags);
     }
 
-    $tracks = $track->getTracksList($key, $startDate, $endDate, $tags);
+    $tracks = $track->getTracksList($startRow, $key, $startDate, $endDate, $tags);
+
+    for ($i = 0; $i < count($tracks); $i++) {
+      $tracks[$i]['tags'] = $track->getTagsByID($tracks[$i]['id']);
+    }
     return $this->json(['status' => "OK", 'message' => [], 'data' => $tracks]);
   }
 
