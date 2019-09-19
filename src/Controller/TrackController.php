@@ -16,25 +16,21 @@ class TrackController extends AbstractController
 {
   public function uploadFile(Request $request, ParameterBagInterface $params, LibTrack $track)
   {
-
-
     $fileDir = $params->get('FILE_DIRECTORY');
-    $file = $request->files->get('file');
+
+    $originalFilename = $_FILES['path']['name'];
+
+    $type = pathinfo($originalFilename, PATHINFO_EXTENSION);
+    $tmp_path = $_FILES['path']['tmp_name'];
+
+    $safeFileName = explode('/',$tmp_path);
+    $safeFileName = uniqid().array_pop($safeFileName);
 
 
-    $key = 'KEY';
     $date = date("Y-m-d");
     $datetime = date("Y-m-d h:m:s");
     $dir = $fileDir.'/'.$date.'/';
-
-
-    $tmpfile = @tempnam($dir, uniqid());
-    unlink($tmpfile);
-    $pieces = explode("/", $tmpfile);
-    $filename = array_pop($pieces);
-
-    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-    $safeFileName = $filename.'.'.$file->guessExtension();
+    $path = $date.'/'.$safeFileName;
 
     $filesystem = new Filesystem();
 
@@ -43,9 +39,7 @@ class TrackController extends AbstractController
       $filesystem->mkdir($dir);
     };
 
-    $file->move($dir, $safeFileName);
-
-    $path = $date.'/'.$safeFileName;
+    move_uploaded_file($tmp_path, $fileDir.'/'.$path.'.'.$type);
 
     $track->addNewTrack($originalFilename, $path, $datetime, NULL);
 
