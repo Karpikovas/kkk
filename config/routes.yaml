@@ -40,3 +40,7 @@ delete_tag:
 update_tag:
   path: /tags/update/{tagID}
   controller: App\Controller\TagController::updateTag
+
+categories:
+  path: /tags/categories
+  controller: App\Controller\TagController::getCategories

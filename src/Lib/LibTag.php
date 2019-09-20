@@ -68,6 +68,9 @@ class LibTag
     );
   }
 
-
+  public function getCategoriesList() {
+    $params = [];
+    return $this->Db->select('SELECT * from Category;', $params);
+  }
 
 }

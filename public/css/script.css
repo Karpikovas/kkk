@@ -35,7 +35,7 @@ span {
   margin-top: 1.5em;
   margin-left: 1.5em;
   margin-right: 1.5em;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .tag {
@@ -56,6 +56,9 @@ span {
     box-sizing: border-box;
   }
 
+  .nav-item.tags-selected {
+    min-height: 200px;
+  }
   .navbar-expand-lg .sidenav {
     flex-direction: column;
   }
@@ -73,13 +76,20 @@ span {
   }
 }
 
+@media (min-width: 200px) {
+  .nav-item.tags-selected {
+    min-height: 50px;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
   justify-content: center;
-  margin-top: 5em;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .card {
@@ -132,6 +142,14 @@ span {
 .label_download {
   color: #4B0082;
   font-size: 18px;
+}
+
+.nav-item .form-control:not(:first-child) {
+  width: 150px;
+}
+.nav-item.tags-selected {
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 

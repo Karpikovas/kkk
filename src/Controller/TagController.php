@@ -13,7 +13,7 @@ class TagController extends AbstractController
 
   public function getTagsList(Request $request, LibTag $tag)
   {
-    $categoryName = $request->query->get('category_name');
+    $categoryName = $request->query->get('category');
 
     $tags = $tag->getTagsList($categoryName);
     return $this->json(['status' => "OK", 'message' => [], 'data' => $tags]);
@@ -44,5 +44,10 @@ class TagController extends AbstractController
 
     $tag->updateTagByID($tagID, $name, $categoryName, $color);
     return $this->json(['status' => "OK", 'message' => [], 'data' => []]);
+  }
+
+  public function getCategories(LibTag $tag) {
+    $categories = $tag->getCategoriesList();
+    return $this->json(['status' => "OK", 'message' => [], 'data' => $categories]);
   }
 }
