@@ -56,7 +56,7 @@ class LibTrack
         } else {
           $flagAnd = true;
         }
-        $sql .= ' id in (SELECT distinct id_track FROM LibTag inner join TrackHasTags on id = id_tag where';
+        $sql .= ' id in (SELECT distinct id_track FROM Tag inner join TrackHasTags on id = id_tag where';
 
         $flagOr = false;
 
@@ -66,7 +66,7 @@ class LibTrack
           } else {
             $flagOr = true;
           }
-          $sql .= ' name = ?';
+          $sql .= ' id = ?';
           $params[] = $tag;
         }
         $sql .= ')';
@@ -77,7 +77,6 @@ class LibTrack
     $sql .= ' order by datetime desc limit ?, 10;';
 
     return $this->Db->select($sql, $params);
-    //return $sql;
   }
 
   public function addNewTrack(?string $name, ?string $path, ?string $datetime, ?string $comment): bool

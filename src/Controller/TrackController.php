@@ -71,6 +71,8 @@ class TrackController extends AbstractController
         $track->deleteTracksTagByID($fileID, $tag);
       }
 
+    } else {
+      $tags = null;
     }
 
     $track->updateTrackByID($fileID,  $comment);
@@ -110,6 +112,17 @@ class TrackController extends AbstractController
 
   }
 
+  /*
+   * Посмотреть список треков в определенный период (start_date - end_date)
+   * Получение по 10 записей, необходимо менять [row]
+   * Поиск по ключевому слову [key]
+   * Передача набора тэгов [tag] через пробел, передаются id тэгов
+   *
+   * Methods[GET]
+   * Пример запроса:
+   *    http://musiclibrary/tracks?row=0&tags=1 2&key=audio&start_date={string Г-м-д ч:м:с} 13:00:00&end_date={string Г-м-д ч:м:с}
+   *    http://site/cars?start_date=2019-09-12 13:00:00&end_date=2019-09-12 15:00:00*/
+
   public function getTracksList(Request $request, LibTrack $track) {
     $startRow = $request->query->get('row');
     $startDate = $request->query->get('start_date');
@@ -117,7 +130,9 @@ class TrackController extends AbstractController
     $key = $request->query->get('key');
     $tags = $request->query->get('tags');
     if ($tags) {
-      $tags = explode(',', $tags);
+      $tags = explode(' ', $tags);
+    } else {
+      $tags = null;
     }
 
     $tracks = $track->getTracksList($startRow, $key, $startDate, $endDate, $tags);

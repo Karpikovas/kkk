@@ -11,14 +11,8 @@
 
     <!-------------------Поле для поиска------------------>
     <li class="nav-item">
-      <input type="text" class="form-control" placeholder="Поиск" aria-label="Поиск" aria-describedby="button-addon2">
+      <input type="text" class="form-control search" placeholder="Поиск" name="search">
     </li>
-
-
-
-
-
-
 
 
       <!----------------Формы для заполнения дат------------------>
@@ -32,9 +26,9 @@
       </div>
       <div class="input-group input-group-sm">
 
-        <input type="date" name="bday" max="3000-12-31"
+        <input type="date" name="start_date" max="3000-12-31"
                min="1000-01-01" class="form-control">
-        <input type="date" name="bday" min="1000-01-01"
+        <input type="date" name="end_date" min="1000-01-01"
                max="3000-12-31" class="form-control">
       </div>
 
@@ -75,10 +69,26 @@
             </select>
           </div>
 
-          <input type="text" class="form-control" placeholder="Название тэга" aria-label="Название тэга" aria-describedby="button-addon2">
+          <input type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
 
         </div>
-        <input type="color" id="head" name="head" value="#e66465" placeholder="Цвет тэга" aria-label="Цвет тэга">
+
+
+
+        <div class="row">
+          <div class="col-5">
+            Выберите цвет:
+          </div>
+          <div class="col-3">
+            <input type="color" id="head" value="#e66465" placeholder="Цвет тэга" name="tag-color">
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-success btn-sm">Добавить</button>
+          </div>
+        </div>
+
+
+
       </div>
 
     </li>
@@ -88,7 +98,13 @@
 
 
 
-    <li class="nav-item tags-selected mb-5"></li>
+    <li class="nav-item tags-selected text-left">
+      Выбранные тэги:
+    </li>
+
+    <li class="nav-item mb-5">
+      <button type="button" class="btn btn-info">Применить</button>
+    </li>
 
 
   </ul>
@@ -97,151 +113,9 @@
 {% endblock %}
 
 {% block body %}
-  <div class="container">
-
-
-
-
-
-  {#<div class="card ">#}
-    {#<div class="card-header">#}
-      {#<div class="row">#}
-        {#<div class="col">#}
-          {#Название трека#}
-        {#</div>#}
-        {#<div class="col-lg-1">#}
-          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
-            {#<span class="fas fa-trash-alt btn-delete"/>#}
-          {#</a>#}
-        {#</div>#}
-        {#<div class="col-md-auto">#}
-          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
-            {#<span class="fas fa-edit"/>#}
-          {#</a>#}
-        {#</div>#}
-      {#</div>#}
-      {#<div class="row">#}
-        {#<div class="col text-muted">#}
-          {#12.12.2019 13:00#}
-        {#</div>#}
-      {#</div>#}
-
-    {#</div>#}
-    {#<div class="card-body text-right">#}
-      {#<audio-control></audio-control>#}
-      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
-      {#<span class="badge badge-pill badge-success tag">Success</span>#}
-      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
-      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
-      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
-    {#</div>#}
-  {#</div>#}
-
-  {#<div class="card ">#}
-    {#<div class="card-header">#}
-      {#<div class="row">#}
-        {#<div class="col">#}
-          {#Название трека#}
-        {#</div>#}
-        {#<div class="col-lg-1">#}
-          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
-            {#<span class="fas fa-trash-alt btn-delete"/>#}
-          {#</a>#}
-        {#</div>#}
-        {#<div class="col-md-auto">#}
-          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
-            {#<span class="fas fa-edit"/>#}
-          {#</a>#}
-        {#</div>#}
-      {#</div>#}
-      {#<div class="row">#}
-        {#<div class="col text-muted">#}
-          {#12.12.2019 13:00#}
-        {#</div>#}
-      {#</div>#}
-
-    {#</div>#}
-    {#<div class="card-body text-right">#}
-      {#<audio-control></audio-control>#}
-      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
-      {#<span class="badge badge-pill badge-success tag">Success</span>#}
-      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
-      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
-      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
-    {#</div>#}
-  {#</div>#}
-
-  {#<div class="card ">#}
-    {#<div class="card-header">#}
-      {#<div class="row">#}
-        {#<div class="col">#}
-          {#Название трека#}
-        {#</div>#}
-        {#<div class="col-lg-1">#}
-          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
-            {#<span class="fas fa-trash-alt btn-delete"/>#}
-          {#</a>#}
-        {#</div>#}
-        {#<div class="col-md-auto">#}
-          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
-            {#<span class="fas fa-edit"/>#}
-          {#</a>#}
-        {#</div>#}
-      {#</div>#}
-      {#<div class="row">#}
-        {#<div class="col text-muted">#}
-          {#12.12.2019 13:00#}
-        {#</div>#}
-      {#</div>#}
-
-    {#</div>#}
-    {#<div class="card-body text-right">#}
-      {#<audio-control></audio-control>#}
-      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
-      {#<span class="badge badge-pill badge-success tag">Success</span>#}
-      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
-      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
-      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
-    {#</div>#}
-  {#</div>#}
-  {#<div class="card ">#}
-    {#<div class="card-header">#}
-      {#<div class="row">#}
-        {#<div class="col">#}
-          {#Название трека#}
-        {#</div>#}
-        {#<div class="col-lg-1">#}
-          {#<a class="btn" data-toggle="modal" data-target="#deleteModal">#}
-            {#<span class="fas fa-trash-alt btn-delete"/>#}
-          {#</a>#}
-        {#</div>#}
-        {#<div class="col-md-auto">#}
-          {#<a class="btn" data-toggle="modal" data-target="#exampleModal">#}
-            {#<span class="fas fa-edit"/>#}
-          {#</a>#}
-        {#</div>#}
-      {#</div>#}
-      {#<div class="row">#}
-        {#<div class="col text-muted">#}
-          {#12.12.2019 13:00#}
-        {#</div>#}
-      {#</div>#}
-
-    {#</div>#}
-    {#<div class="card-body text-right">#}
-      {#<audio-control></audio-control>#}
-      {#<span class="badge badge-pill badge-secondary tag">Secondary</span>#}
-      {#<span class="badge badge-pill badge-success tag">Success</span>#}
-      {#<span class="badge badge-pill badge-danger tag">Danger</span>#}
-      {#<span class="badge badge-pill badge-warning tag">Warning</span>#}
-      {#<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>#}
-    {#</div>#}
-  {#</div>#}
-
-
+  <div class="container"></div>
 
   <!--------------Модальное окно редактирования аудио------------------->
-
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -304,7 +178,6 @@
         </div>
       </div>
     </div>
-  </div>
   </div>
 
 {% endblock %}

@@ -2,10 +2,6 @@
   margin: 0;
   padding: 0;
 }
-/*html {*/
-  /*min-height: 100%;*/
-
-/*}*/
 
 html, body {
   margin: 0;
@@ -144,12 +140,25 @@ span {
   font-size: 18px;
 }
 
-.nav-item .form-control:not(:first-child) {
+.nav-item .new-select {
   width: 150px;
 }
 .nav-item.tags-selected {
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.nav-item.tags-selected > .tag {
+  opacity: 0.8;
+}
+
+.nav-item.tags-selected::-webkit-scrollbar
+{
+  width:0px;
+}
+.nav-item.tags-selected::-webkit-scrollbar-track-piece
+{
+  background-color:transparent;
 }
 
 
