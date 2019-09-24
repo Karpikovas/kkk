@@ -1,0 +1,129 @@
+.container {
+    align-items: center;
+}
+
+.navbar-collapse > .btn {
+    font-size: 20px;
+}
+
+.nav-item {
+    margin-top: 1.5em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    font-size: 16px;
+}
+
+.nav-item .new-select {
+    width: 150px;
+}
+.nav-item.tags-selected {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.nav-item.tags-selected > .tag {
+    opacity: 0.8;
+}
+
+.nav-item.tags-selected::-webkit-scrollbar
+{
+    width:0px;
+}
+.nav-item.tags-selected::-webkit-scrollbar-track-piece
+{
+    background-color:transparent;
+}
+
+.btn-delete {
+    color: indianred;
+}
+.btn-new-tag {
+    font-size: 20px;
+}
+
+.btn-outline-light:hover{
+    color: black;
+}
+
+.card {
+    background: #4B0082;
+    margin-top: 2em;
+}
+
+div.card-header a {
+    padding: 0;
+}
+.modal {
+    color: black;
+    font-size: 16px;
+}
+
+.modal-header {
+    background-color: thistle;
+}
+
+.text-muted {
+    font-size: 14px;
+}
+
+
+.dropdown {
+    display: inline-block;
+}
+
+.label_download {
+    color: #4B0082;
+    font-size: 18px;
+}
+
+
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: calc(2.25rem + 2px);
+    height: calc(2.25rem + 2px);
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+
+@media (min-width: 992px) {
+    .sidenav {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25em;
+        height: calc(100vh - 3.5rem);
+        margin-top: 3.5rem;
+        background: rebeccapurple;
+        box-sizing: border-box;
+    }
+
+    .nav-item.tags-selected {
+        min-height: 200px;
+    }
+    .navbar-expand-lg .sidenav {
+        flex-direction: column;
+    }
+
+    .content-wrapper {
+        margin-right: 25em;
+    }
+
+    .navbar-collapse > .btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-top: 0.5rem;
+        margin-right: 10.5rem;
+    }
+}
+
+@media (min-width: 200px) {
+    .nav-item.tags-selected {
+        min-height: 50px;
+    }
+}

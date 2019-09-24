@@ -15,4 +15,11 @@ class SiteController extends AbstractController
     );
   }
 
+  public function newTrack() {
+
+    return $this->render(
+        'site/new.html.twig', []
+    );
+  }
+
 }

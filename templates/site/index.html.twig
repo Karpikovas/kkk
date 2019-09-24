@@ -1,22 +1,26 @@
 {% extends 'base.html.twig' %}
 
+{% block styles %}
+  <link href="css/homepage.css" rel="stylesheet">
+{% endblock %}
+
+
 {% block header %}
   <div class="collapse navbar-collapse text-center" id="navbarCollapse">
 
-  <a class="btn">
-    <span class="fas fa-download"/>
-  </a>
+  <label class="btn btn-default" data-btn-type="btn-file">
+    <input type="file" hidden>
+    <i class="fas fa-download"></i>
+  </label>
 
-  <ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+  <ul class="navbar-nav mr-auto sidenav">
 
     <!-------------------Поле для поиска------------------>
     <li class="nav-item">
-      <input type="text" class="form-control search" placeholder="Поиск" name="search">
+      <input type="text" class="form-control" placeholder="Поиск" name="search">
     </li>
 
-
       <!----------------Формы для заполнения дат------------------>
-
 
 
     <li class="nav-item ">
@@ -43,12 +47,12 @@
       </div>
 
       <div class="input-group input-group-sm">
-        <select class="form-control main-select">
+        <select class="form-control" data-select-type="tags-list">
           <option selected>Все</option>
         </select>
 
         <a class="btn " data-toggle="collapse" data-target="#newTag">
-          <span class="fas fa-plus-circle btn-new-tag"></span>
+          <span class="fas fa-plus-circle btn-new-tag" ></span>
         </a>
 
 
@@ -64,7 +68,7 @@
         <div class="input-group input-group-sm mb-3">
 
           <div class="input-group-prepend">
-            <select class="form-control form-control-sm new-select ">
+            <select class="form-control form-control-sm" data-select-type="new-tags-list">
 
             </select>
           </div>
@@ -73,37 +77,34 @@
 
         </div>
 
-
-
         <div class="row">
           <div class="col-5">
             Выберите цвет:
           </div>
           <div class="col-3">
-            <input type="color" id="head" value="#e66465" placeholder="Цвет тэга" name="tag-color">
+            <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">
           </div>
           <div class="col">
-            <button type="button" class="btn btn-success btn-sm">Добавить</button>
+            <button type="button" class="btn btn-success btn-sm" data-btn-type="btn-new-tag">Добавить</button>
           </div>
         </div>
-
-
 
       </div>
 
     </li>
 
-    <!----------------------Тэги добавление---------------------------->
-    <li class="nav-item tags"></li>
+    <!----------------------Тэги согласно категории---------------------------->
+    <li class="nav-item" data-tags-list-type="all"></li>
 
 
+    <!----------------------Выбранные тэги ---------------------------->
 
-    <li class="nav-item tags-selected text-left">
+    <li class="nav-item text-left" data-tags-list-type="selected">
       Выбранные тэги:
     </li>
 
     <li class="nav-item mb-5">
-      <button type="button" class="btn btn-info">Применить</button>
+      <button type="button" class="btn btn-info" data-btn-type="apply">Применить</button>
     </li>
 
 
@@ -159,7 +160,7 @@
     </div>
   </div>
 
-  <!--------------------Модальное окно удаления------------------->
+  <!--------------------Модальное окно удаления трека------------------->
   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -180,6 +181,7 @@
     </div>
   </div>
 
+
 {% endblock %}
 
 
@@ -188,9 +190,4 @@
   <script src="js/components/SimpleSlider.js"></script>
   <script src="js/components/VolumeSlider.js"></script>
   <script src="js/script.js"></script>
-{% endblock %}
-
-
-{% block styles %}
-
 {% endblock %}

@@ -1,0 +1,56 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: #E6E6FA;
+  color: white;
+}
+
+span {
+  color: white;
+}
+
+.main
+{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding-top: 70px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.navbar {
+  background: rebeccapurple;
+}
+
+.tag {
+  margin-top: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.badge > .close {
+
+  margin-left: .25rem;
+  color: inherit;
+  font-size: 100%;
+}

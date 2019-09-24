@@ -3,6 +3,10 @@ home:
   path: /
   controller: App\Controller\SiteController::index
 
+new:
+  path: /new
+  controller: App\Controller\SiteController::newTrack
+
 #----- Links for Track
 upload_file:
   path: /tracks/upload
