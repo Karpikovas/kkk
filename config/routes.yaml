@@ -28,6 +28,10 @@ tracks:
   path: /tracks
   controller: App\Controller\TrackController::getTracksList
 
+track_id:
+  path: /tracks/{ID}
+  controller: App\Controller\TrackController::getTrackByID
+
 # ----- Links for Tag
 tags:
   path: /tags

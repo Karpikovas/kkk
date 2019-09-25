@@ -5,6 +5,7 @@ $(document).ready(function () {
   const SELECTEDTAGS = $('*[data-tags-list-type="selected"]');
   const INPUTSEARCH = $('input[name="search"]');
   const INPUTCATEGORY = $('*[data-select-type="tags-list"]');
+  const INPUTFILE = $('input[name="file"]')
 
   const SPINNER = '<div class="label_download">Загрузка...</div>';
 
@@ -33,6 +34,8 @@ $(document).ready(function () {
     /*---------------- Получение тэгов при изменении значения в выпадающем списке ------------*/
     INPUTCATEGORY.on('change', function(event){ getTags(this.value) });
 
+    INPUTFILE.on('change', function(event){ uploadFile() });
+
     /*---------------- Поиск при нажатии enter в поле поиска -----------------------*/
     INPUTSEARCH.keyup(function(event){
       if(event.keyCode === 13){
@@ -50,7 +53,7 @@ $(document).ready(function () {
       removeTag($(this).parent())
     });
 
-    /*------------------ Удаление тжга из списка выбранных ----------------------------------*/
+    /*------------------ Удаление тэга из списка выбранных ----------------------------------*/
     SELECTEDTAGS.on('click', '.tag > .close', function (event) {  removeSelectedTag($(this).parent()) });
 
 
@@ -61,6 +64,21 @@ $(document).ready(function () {
     $('*[data-btn-type="btn-new-tag"]').on('click',  function (event) { addNewTag() });
   }
 
+  function uploadFile() {
+    let track = INPUTFILE[0].files[0];
+    let formData = new FormData();
+
+    formData.append("path", track);
+
+    axios.post('/tracks/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then(function (response) {
+        window.location.replace("/new");
+      })
+  }
 
   /*----------------- Выбор тэга для поиска (добавление в выбранные) -------------------------------*/
 

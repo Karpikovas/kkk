@@ -79,6 +79,13 @@ class LibTrack
     return $this->Db->select($sql, $params);
   }
 
+  public function getTrackByID(string $ID) {
+    $params = [
+        $ID
+    ];
+    return $this->Db->select('SELECT id, name, datetime, comment fROM Track WHERE id=?;', $params);
+  }
+
   public function addNewTrack(?string $name, ?string $path, ?string $datetime, ?string $comment): bool
   {
     $params = [
