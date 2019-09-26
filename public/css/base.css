@@ -47,6 +47,8 @@ span {
   margin-left: 0.5em;
   margin-right: 0.5em;
   cursor: pointer;
+  /*color: black;*/
+  text-shadow: 1px 1px 2px black;
 }
 
 .badge > .close {

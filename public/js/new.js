@@ -6,16 +6,36 @@ $(document).ready(function () {
   var tagsArray = [];
 
   function init() {
-    getCategories();
+    // getCategories();
     bindEvents();
   }
 
   function bindEvents() {
     /*---------------- Получение тэгов при изменении значения в выпадающем списке ------------*/
-    INPUTCATEGORY.on('change', function(event){ getTags(this.value) });
+    // INPUTCATEGORY.on('change', function(event){ getTags(this.value) });
+
+    INPUTCATEGORY.on('change', function(event){ select(this.value) });
 
     /*----------------- Добавление тэга в "выбранные" при клике на тэг -----------------*/
     TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
+
+    $('.card-body').on('click', '.tag', function (event) {
+      returnTag($(this));
+    })
+  }
+
+  function select(value) {
+    let tag = INPUTCATEGORY.find(`option[value=${value}]`);
+    let span =`<span class="badge badge-primary tag">${ value }</span>`
+    $('.card-body').append(span);
+    tag.hide();
+
+  }
+
+  function returnTag(span) {
+    let value = span.text();
+    $(`option[value=${value}]`).toggle();
+    span.remove();
   }
 
   function getCategories() {

@@ -1,10 +1,15 @@
 $(document).ready(function () {
 
   const CONTAINER = $(".container");
+
   const TAGCONTAINER = $('*[data-tags-list-type="all"]');
+
   const SELECTEDTAGS = $('*[data-tags-list-type="selected"]');
+
   const INPUTSEARCH = $('input[name="search"]');
-  const INPUTCATEGORY = $('*[data-select-type="tags-list"]');
+
+      // const INPUTCATEGORY = $('*[data-select-type="tags-list"]');
+
   const INPUTFILE = $('input[name="file"]')
 
   const SPINNER = '<div class="label_download">Загрузка...</div>';
@@ -12,8 +17,14 @@ $(document).ready(function () {
   var inProgress = false;
 
   // Параметры запроса аудио
-  var startRow = 0;
   var tagsArray = [];
+  var params = {
+    row: 0,
+    start_date: null,
+    end_date: null,
+    key: null,
+    tags: null
+  };
 
 
   function init() {
@@ -31,8 +42,12 @@ $(document).ready(function () {
       }
     });
 
-    /*---------------- Получение тэгов при изменении значения в выпадающем списке ------------*/
-    INPUTCATEGORY.on('change', function(event){ getTags(this.value) });
+
+    TAGCONTAINER.on('change', function (event) { selectTag() });
+
+    SELECTEDTAGS.on('click', '.tag', function (event) {
+      returnTag($(this));
+    });
 
     INPUTFILE.on('change', function(event){ uploadFile() });
 
@@ -45,7 +60,7 @@ $(document).ready(function () {
     });
 
     /*----------------- Добавление тэга в "выбранные" при клике на тэг -----------------*/
-    TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
+    // TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
 
     /*----------------- Удаление тэга из БД пр клике на крестик -------------------------*/
     TAGCONTAINER.on('click', '.tag > .close', function (event) {
@@ -62,6 +77,9 @@ $(document).ready(function () {
 
     /*--------------------- Добавление нового тэга при клике на кнопку "Добавить" --------------*/
     $('*[data-btn-type="btn-new-tag"]').on('click',  function (event) { addNewTag() });
+
+
+    CONTAINER.on('click', '*[data-btn-type="edit_card"]', function (event) { getTrackInfo($(this).parents('.card').data().id) })
   }
 
   function uploadFile() {
@@ -80,55 +98,156 @@ $(document).ready(function () {
       })
   }
 
-  /*----------------- Выбор тэга для поиска (добавление в выбранные) -------------------------------*/
-
-  function selectTag(currentTag) {
-    let tagID = currentTag.data().id;
-
-    if (!tagsArray.includes(tagID)) {
-      currentTag.clone().appendTo(SELECTEDTAGS);
-      tagsArray.push(tagID);
-    }
-  }
-
-  /*------------------------ Получение и вывод тэгов-----------------------------------------*/
-
-  function getTags(category) {
-
-    if (category.localeCompare("Все")) {
-
-      axios.get('/tags', {
-        params: {
-          category: category
-        }
-      })
+  function getTrackInfo(track) {
+    axios.get(`/tracks/${ track }`)
         .then(function (response) {
 
+          let track = response.data.data;
+
+
+          $('*[data-form-type="name"]').html(`Название: ${ track.name }`);
+          $('*[data-form-type="comment"]').html(`${ track.comment ? track.comment : ""}`);
+
           let result = "";
-          let tags = response.data.data;
-
-
-          tags.forEach(function (item) {
+          track.tags.forEach(function (tag) {
 
             let tagTemplate = `
-              <span 
-                class="badge badge-pill tag" 
-                style="background: ${ item.color }"
+              <span
+                class="badge badge-pill tag"
+                style="background: ${ tag.color }"
+                data-category="${ tag.category_name }"
+                data-name="${ tag.name }"
+                data-id="${ tag.id }">
+                ${ tag.name }
+      
+              </span>`;
+            result += tagTemplate;
+          });
+
+          $('*[data-form-type="tags_selected"]').html(result);
+
+
+          // tags.forEach(function (item) {
+          //
+          //   let tagTemplate = `
+          //     <option
+          //       value="${ item.name }"
+          //       data-color="${ item.color }"
+          //       data-category="${ item.category_name }"
+          //       data-name="${ item.name }"
+          //       data-id="${ item.id }">
+          //       ${ item.name }
+          //     </option>`;
+          //
+          //   TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
+          // });
+
+        })
+  }
+
+// ---------------------- Возвращение тэга в список -------------------
+
+  function returnTag(span) {
+    for(let i = 0; i < tagsArray.length; i++){
+      if ( tagsArray[i] === span.data().id) {
+
+        tagsArray.splice(i, 1);
+        let value = span.text();
+        $(`option[value=${value}]`).toggle();
+        span.remove();
+        break;
+      }
+    }
+
+
+  }
+
+  /*----------------- Выбор тэга для поиска (добавление в выбранные) -------------------------------*/
+  function selectTag() {
+    let tag = TAGCONTAINER.find('option:selected');
+
+      let tagTemplate = `
+        <span
+          class="badge badge-pill tag"
+          style="background: ${ tag.data().color }"
+          data-category="${ tag.data().category }"
+          data-name="${ tag.data().name }"
+          data-id="${ tag.data().id }">
+          ${ tag.val() }
+
+        </span>`;
+
+    tagsArray.push(tag.data().id)
+    SELECTEDTAGS.append(tagTemplate);
+    tag.hide();
+  }
+  /*------------------------ Получение и вывод тэгов-----------------------------------------*/
+
+  // function getTags(category) {
+  //
+  //   if (category.localeCompare("Все")) {
+  //
+  //     axios.get('/tags', {
+  //       params: {
+  //         category: category
+  //       }
+  //     })
+  //       .then(function (response) {
+  //
+  //         let result = "";
+  //         let tags = response.data.data;
+  //
+  //
+  //         tags.forEach(function (item) {
+  //
+  //           let tagTemplate = `
+  //             <span
+  //               class="badge badge-pill tag"
+  //               style="background: ${ item.color }"
+  //               data-category="${ item.category_name }"
+  //               data-name="${ item.name }"
+  //               data-id="${ item.id }">
+  //               ${ item.name }
+  //               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  //                   <span aria-hidden="true">&times;</span>
+  //               </button>
+  //             </span>`;
+  //
+  //           result += tagTemplate;
+  //         });
+  //
+  //         TAGCONTAINER.html(result);
+  //       })
+  //   }
+  // }
+
+  function getTags() {
+     TAGCONTAINER.find('option').empty();
+
+      axios.get('/tags')
+          .then(function (response) {
+
+            let result = "";
+            let tags = response.data.data;
+
+
+            tags.forEach(function (item) {
+
+              let tagTemplate = `
+              <option
+                value="${ item.name }"
+                data-color="${ item.color }"
                 data-category="${ item.category_name }"
                 data-name="${ item.name }"
                 data-id="${ item.id }">
                 ${ item.name }
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-              </span>`;
+              </option>`;
 
-            result += tagTemplate;
-          });
+              TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
+            });
 
-          TAGCONTAINER.html(result);
-        })
-    }
+          })
+
   }
 
   /*--------------------- Удаление тэга (включает удаление из БД и удаление из поля выбранных тэгов) --------------------*/
@@ -189,11 +308,12 @@ $(document).ready(function () {
         let categories = response.data.data;
 
         categories.forEach(function (item) {
-          let category = `<option value="${ item.name }">${ item.name }</option>`;
+          let category = `<optgroup label="${ item.name }"></optgroup>`;
           result += category;
         });
 
-        $("select.form-control").append(result);
+        TAGCONTAINER.append(result);
+        getTags();
       })
   }
 
@@ -203,12 +323,13 @@ $(document).ready(function () {
     CONTAINER.append(SPINNER);
 
     axios.get('/tracks', {
-      params: prepareParams()
+      params: params
     })
       .then(function (response) {
 
         $(".label_download").remove();
-        startRow += 10;
+
+        params.row += 10;
 
         let result = "";
         let tracks = response.data.data;
@@ -219,7 +340,10 @@ $(document).ready(function () {
 
         tracks.forEach(function (item) {
           let cardTemplate = `
-            <div class="card">
+            <div 
+                class="card"
+                data-id="${item.id}"
+            >
               <div class="card-header">
                 <div class="row">
                     <div class="col-9">
@@ -231,7 +355,7 @@ $(document).ready(function () {
                         </a>
                     </div>
                     <div class="col-1">
-                        <a class="btn" data-toggle="modal" data-target="#exampleModal">
+                        <a class="btn" data-toggle="modal" data-target="#exampleModal" data-btn-type="edit_card">
                             <span class="fas fa-edit"/>
                         </a>
                     </div>
@@ -276,21 +400,21 @@ $(document).ready(function () {
   }
 
   /*--------------------- Подготовка параметров поиска ----------------------*/
+
   function prepareParams() {
-    let params = {
-      row: startRow,
+    params = {
+      row: 0,
       start_date: $("input[name='start_date']").val(),
       end_date: $("input[name='end_date']").val(),
       key: INPUTSEARCH.val(),
       tags: tagsArray.join(' ')
     };
-
-    return params;
   }
 
   /*---------------- Новый поиск с очисткой содержимого контейнера ------------------------------*/
+
   function search() {
-    startRow = 0;
+    prepareParams();
     CONTAINER.empty();
     getTracks();
   }

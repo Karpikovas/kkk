@@ -14,13 +14,10 @@ class LibTag
     $this->Db = $Db;
   }
 
-  public function getTagsList(?string $category)
+  public function getTagsList()
   {
-    $params = [
-        $category
-    ];
-
-    return $this->Db->select('SELECT * FROM Tag where category_name=?;', $params);
+    $params = [];
+    return $this->Db->select('SELECT * FROM Tag;', $params);
   }
 
   public function addNewTag(?string $name, ?string $categoryName, ?string $color)

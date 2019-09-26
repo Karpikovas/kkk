@@ -13,9 +13,9 @@ class TagController extends AbstractController
 
   public function getTagsList(Request $request, LibTag $tag)
   {
-    $categoryName = $request->query->get('category');
+//    $categoryName = $request->query->get('category');
 
-    $tags = $tag->getTagsList($categoryName);
+    $tags = $tag->getTagsList();
     return $this->json(['status' => "OK", 'message' => [], 'data' => $tags]);
   }
 

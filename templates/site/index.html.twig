@@ -36,77 +36,90 @@
                max="3000-12-31" class="form-control">
       </div>
 
-
     </li>
 
-    <!----------------Select со списком категорий-------------->
 
-    <li class="nav-item">
+{#    <li class="nav-item">#}
+{#      <div class="mb-3">#}
+{#        Выбор тэгов#}
+{#      </div>#}
+
+{#      <div class="input-group input-group-sm">#}
+{#        <select class="form-control" data-select-type="tags-list">#}
+{#          <option selected>Все</option>#}
+{#        </select>#}
+
+{#        <a class="btn " data-toggle="collapse" data-target="#newTag">#}
+{#          <span class="fas fa-edit btn-new-tag" ></span>#}
+{#        </a>#}
+
+
+
+{#      </div>#}
+
+{#      <div class="collapse mt-3" id="newTag">#}
+
+{#        <div class="mb-3">#}
+{#          Добавить новый тэг#}
+{#        </div>#}
+
+{#        <div class="input-group input-group-sm mb-3">#}
+
+{#          <div class="input-group-prepend">#}
+{#            <select class="form-control form-control-sm" data-select-type="new-tags-list">#}
+
+{#            </select>#}
+{#          </div>#}
+
+{#          <input type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>#}
+
+{#        </div>#}
+
+{#        <div class="row">#}
+{#          <div class="col-5">#}
+{#            Выберите цвет:#}
+{#          </div>#}
+{#          <div class="col-3">#}
+{#            <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">#}
+{#          </div>#}
+{#          <div class="col">#}
+{#            <button type="button" class="btn btn-success btn-sm" data-btn-type="btn-new-tag">Добавить</button>#}
+{#          </div>#}
+{#        </div>#}
+
+{#      </div>#}
+
+{#    </li>#}
+
+    <!----------------------Тэги согласно категории---------------------------->
+
+
+    <li  class="nav-item" >
       <div class="mb-3">
         Выбор тэгов
       </div>
-
       <div class="input-group input-group-sm">
-        <select class="form-control" data-select-type="tags-list">
-          <option selected>Все</option>
+        <select class="form-control" data-tags-list-type="all">
         </select>
 
         <a class="btn " data-toggle="collapse" data-target="#newTag">
-          <span class="fas fa-plus-circle btn-new-tag" ></span>
+          <span class="fas fa-edit btn-new-tag" ></span>
         </a>
 
-
-
       </div>
 
-      <div class="collapse mt-3" id="newTag">
-
-        <div class="mb-3">
-          Добавить новый тэг
+      <!----------------------Выбранные тэги ---------------------------->
+      <div class="card">
+        <div class="card-body text-left" data-tags-list-type="selected">
+          Выбранные тэги:
         </div>
-
-        <div class="input-group input-group-sm mb-3">
-
-          <div class="input-group-prepend">
-            <select class="form-control form-control-sm" data-select-type="new-tags-list">
-
-            </select>
-          </div>
-
-          <input type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
-
-        </div>
-
-        <div class="row">
-          <div class="col-5">
-            Выберите цвет:
-          </div>
-          <div class="col-3">
-            <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">
-          </div>
-          <div class="col">
-            <button type="button" class="btn btn-success btn-sm" data-btn-type="btn-new-tag">Добавить</button>
-          </div>
-        </div>
-
       </div>
 
-    </li>
-
-    <!----------------------Тэги согласно категории---------------------------->
-    <li class="nav-item" data-tags-list-type="all"></li>
-
-
-    <!----------------------Выбранные тэги ---------------------------->
-
-    <li class="nav-item text-left" data-tags-list-type="selected">
-      Выбранные тэги:
     </li>
 
     <li class="nav-item mb-5">
       <button type="button" class="btn btn-info" data-btn-type="apply">Применить</button>
     </li>
-
 
   </ul>
 
@@ -121,35 +134,37 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Редактировать</h5>
+          <h5 class="modal-title">Редактировать</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <form>
-            <div class="form-group">
-              <label for="name" class="col-form-label">Название:</label>
-              <input type="text" class="form-control" id="name">
+            <div class="form-group" data-form-type="name">
+              Название:
             </div>
             <div class="form-group">
               <label for="comment-text" class="col-form-label">Комментарий:</label>
-              <textarea class="form-control" id="comment-text"></textarea>
+              <textarea class="form-control" id="comment-text" data-form-type="comment"></textarea>
             </div>
-            <div>
 
-              </button>
-              <span class="badge badge-pill badge-success tag">Success
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                   </span>
-              <span class="badge badge-pill badge-danger tag">Danger
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                   </span>
+            <div class="form-group">
+
+              <div class="mb-3">
+                Выбор тэгов
+              </div>
+              <div class="input-group input-group-sm">
+                <select class="form-control" data-form-type="tags_all">
+                </select>
+              </div>
+              <!----------------------Выбранные тэги ---------------------------->
+
             </div>
+            <div class="form-group" data-form-type="tags_selected">
+              Выбранные тэги:
+            </div>
+
           </form>
         </div>
         <div class="modal-footer">

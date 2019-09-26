@@ -144,7 +144,7 @@ class TrackController extends AbstractController
   }
 
   public function getTrackByID(Request $request, $ID, LibTrack $track) {
-    $track_info = $track->getTrackByID($ID);
+    $track_info = $track->getTrackByID($ID)[0];
     $track_info['tags'] = $track->getTagsByID($ID);
 
     return $this->json(['status' => "OK", 'message' => [], 'data' => $track_info]);

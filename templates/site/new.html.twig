@@ -11,41 +11,38 @@
 
 
 {% block body %}
+
     <div class="container text-dark">
         <div class="row h-100 justify-content-center align-items-center">
+            <div class="main-form">
+                <select class="custom-select" data-select-type="tags-list">
 
-            <form class="main-form">
-                <div class="form-group">
-                    <label for="name" class="col-form-label">Название:</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <optgroup label="Категория 1">
+                        <option value="Second">Second</option>
+                        <option value="Second1">Second</option>
+                        <option value="Second2">Second</option>
+                        <option value="Second2">Second</option>
+                        <option value="Second3">Second</option>
+                        <option value="Second4">Second</option>
+                        <option value="Second5">Second</option>
+                        <option value="Second6">Second</option>
+                        <option value="Third7">Third</option>
+                    </optgroup>
+
+                    <optgroup label="Категория 2">
+                        <option value="sss">Second</option>
+                    </optgroup>
+
+                </select>
+
+                <div class="card">
+
+                    <div class="card-body">
+                        Выбранные тэги:
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="comment-text" class="col-form-label">Комментарий:</label>
-                    <textarea class="form-control" id="comment-text" name="comment"></textarea>
-                </div>
+            </div>
 
-
-                <div class="form-group">
-                    Выбор тэгов
-                </div>
-
-                <div class="input-group input-group-sm">
-                    <select class="form-control" data-select-type="tags-list">
-                        <option selected>Все</option>
-                    </select>
-                </div>
-
-                <div class="form-group text-center" data-tags-list-type="all"></div>
-
-                <div class="form-group text-left mb-3" data-tags-list-type="selected">
-                    Выбранные тэги:
-                </div>
-
-
-                <div class="form-group text-right mb-3">
-                    <button type="button" class="btn btn-primary" data-btn-type="save">Сохранить</button>
-                </div>
-            </form>
         </div>
     </div>
 
