@@ -146,9 +146,7 @@ class LibTrack
 
     return $this->Db->select('
         SELECT 
-            id_tag,
-            name, 
-            color 
+            * 
         FROM musiclibrary.TrackHasTags
         inner join Tag on id = id_tag 
         where id_track = ?;
@@ -187,6 +185,15 @@ class LibTrack
         $params
     );
 
+  }
+
+  public function getTracksIDByPath(string $path)
+  {
+    $params = [
+        $path
+    ];
+
+    return $this->Db->select('select id from Track where path = ?', $params);
   }
 }
 

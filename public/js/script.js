@@ -3,8 +3,10 @@ $(document).ready(function () {
   const CONTAINER = $(".container");
 
   const TAGCONTAINER = $('*[data-tags-list-type="all"]');
+  const TRACKTAGCONTAINER = $('*[data-form-type="tags_all"]');
 
   const SELECTEDTAGS = $('*[data-tags-list-type="selected"]');
+  const TRACKSELECTEDTAGS = $('*[data-form-type="tags_selected"]');
 
   const INPUTSEARCH = $('input[name="search"]');
 
@@ -17,7 +19,7 @@ $(document).ready(function () {
   var inProgress = false;
 
   // Параметры запроса аудио
-  var tagsArray = [];
+
   var params = {
     row: 0,
     start_date: null,
@@ -42,16 +44,20 @@ $(document).ready(function () {
       }
     });
 
+    /*----------------- Добавление тэга в "выбранные" при клике на тэг -----------------*/
+    TAGCONTAINER.on('change', function (event) { selectTag(TAGCONTAINER, SELECTEDTAGS) });
 
-    TAGCONTAINER.on('change', function (event) { selectTag() });
+    /*-------------- Удаление тэга из списка выбранных и возвращение в список ----------------------------------*/
+    SELECTEDTAGS.on('click', '.tag', function (event) { returnTag($(this), TAGCONTAINER); });
 
-    SELECTEDTAGS.on('click', '.tag', function (event) {
-      returnTag($(this));
-    });
+    TRACKTAGCONTAINER.on('change', function (event) { selectTag(TRACKTAGCONTAINER, TRACKSELECTEDTAGS) });
+
+    TRACKSELECTEDTAGS.on('click', '.tag', function (event) { returnTag($(this), TRACKTAGCONTAINER); });
 
     INPUTFILE.on('change', function(event){ uploadFile() });
 
     /*---------------- Поиск при нажатии enter в поле поиска -----------------------*/
+
     INPUTSEARCH.keyup(function(event){
       if(event.keyCode === 13){
         event.preventDefault();
@@ -59,26 +65,33 @@ $(document).ready(function () {
       }
     });
 
-    /*----------------- Добавление тэга в "выбранные" при клике на тэг -----------------*/
+
     // TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
 
     /*----------------- Удаление тэга из БД пр клике на крестик -------------------------*/
-    TAGCONTAINER.on('click', '.tag > .close', function (event) {
-      event.stopPropagation();
-      removeTag($(this).parent())
-    });
 
-    /*------------------ Удаление тэга из списка выбранных ----------------------------------*/
-    SELECTEDTAGS.on('click', '.tag > .close', function (event) {  removeSelectedTag($(this).parent()) });
+    // TAGCONTAINER.on('click', '.tag > .close', function (event) {
+    //   event.stopPropagation();
+    //   removeTag($(this).parent())
+    // });
+
+
+    // SELECTEDTAGS.on('click', '.tag > .close', function (event) {  removeSelectedTag($(this).parent()) });
 
 
     /*------------------- Поиск при клике на кнопку "Применить" ---------------------------*/
     $('*[data-btn-type="apply"]').on('click', function (event) { search() });
 
+    $('*[data-btn-type="save_track"]').on('click', function (event) { editTrack($('#modalInfo').data().id) });
+    CONTAINER.on('click', '*[data-btn-type="ask_delete_track"]', function (event) {
+      askDeleteTrack($(this).parents('.card').data().id)
+    });
+
+    $('*[data-btn-type="delete_track"]').on('click', function (event) { deleteTrack($('#deleteModal').data().id) });
     /*--------------------- Добавление нового тэга при клике на кнопку "Добавить" --------------*/
-    $('*[data-btn-type="btn-new-tag"]').on('click',  function (event) { addNewTag() });
+    // $('*[data-btn-type="btn-new-tag"]').on('click',  function (event) { addNewTag() });
 
-
+    /*--------------------- Открытие параметров редактирования трека --------------*/
     CONTAINER.on('click', '*[data-btn-type="edit_card"]', function (event) { getTrackInfo($(this).parents('.card').data().id) })
   }
 
@@ -94,11 +107,35 @@ $(document).ready(function () {
       }
     })
       .then(function (response) {
-        window.location.replace("/new");
+        let trackID = response.data.data[0].id;
+        getTrackInfo(trackID)
       })
   }
 
+  function editTrack(ID) {
+    let tagsArray = [];
+
+    TRACKSELECTEDTAGS.find('.tag').each(function (tag) {
+      tagsArray.push($(this).data().id)
+    });
+
+    console.log($('*[data-form-type="comment"]').val());
+
+    axios.post(`/tracks/update/${ID}`, {
+      comment: $('*[data-form-type="comment"]').val(),
+      tags: tagsArray.join(' ')
+    })
+        .then(function (response) {
+          $('#modalInfo').modal('hide');
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  }
   function getTrackInfo(track) {
+
+    TRACKTAGCONTAINER.find('option').show();
+
     axios.get(`/tracks/${ track }`)
         .then(function (response) {
 
@@ -121,10 +158,16 @@ $(document).ready(function () {
                 ${ tag.name }
       
               </span>`;
+
+            let tagSelected = TRACKTAGCONTAINER.find(`option[data-category="${ tag.category_name }"][value="${tag.name}"]`);
+            tagSelected.hide();
             result += tagTemplate;
           });
 
-          $('*[data-form-type="tags_selected"]').html(result);
+          TRACKSELECTEDTAGS.html('Выбранные тэги:' +  result);
+
+          $('#modalInfo').modal('show');
+          $('#modalInfo').data('id', track.id)
 
 
           // tags.forEach(function (item) {
@@ -145,26 +188,32 @@ $(document).ready(function () {
         })
   }
 
+  function askDeleteTrack(ID) {
+    $('#deleteModal').data('id', ID);
+  }
+
+  function deleteTrack(ID) {
+
+    axios.post(`/tracks/delete/${ ID }`)
+        .then(function (response) {
+
+          CONTAINER.find(`.card[data-id="${ ID }"]`).remove();
+          $('#deleteModal').modal('hide');
+        })
+  }
+
 // ---------------------- Возвращение тэга в список -------------------
 
-  function returnTag(span) {
-    for(let i = 0; i < tagsArray.length; i++){
-      if ( tagsArray[i] === span.data().id) {
-
-        tagsArray.splice(i, 1);
-        let value = span.text();
-        $(`option[value=${value}]`).toggle();
-        span.remove();
-        break;
-      }
-    }
-
-
+  function returnTag(span, tagContainer) {
+    let value = span.text();
+    let category = span.data().category;
+    tagContainer.find($(`option[value=${value}][data-category="${category}"]`)).show();
+    span.remove();
   }
 
   /*----------------- Выбор тэга для поиска (добавление в выбранные) -------------------------------*/
-  function selectTag() {
-    let tag = TAGCONTAINER.find('option:selected');
+  function selectTag(tagContainer, selectedTags) {
+    let tag = tagContainer.find('option:selected');
 
       let tagTemplate = `
         <span
@@ -177,11 +226,10 @@ $(document).ready(function () {
 
         </span>`;
 
-    tagsArray.push(tag.data().id)
-    SELECTEDTAGS.append(tagTemplate);
+    selectedTags.append(tagTemplate);
     tag.hide();
   }
-  /*------------------------ Получение и вывод тэгов-----------------------------------------*/
+
 
   // function getTags(category) {
   //
@@ -221,34 +269,7 @@ $(document).ready(function () {
   //   }
   // }
 
-  function getTags() {
-     TAGCONTAINER.find('option').empty();
 
-      axios.get('/tags')
-          .then(function (response) {
-
-            let result = "";
-            let tags = response.data.data;
-
-
-            tags.forEach(function (item) {
-
-              let tagTemplate = `
-              <option
-                value="${ item.name }"
-                data-color="${ item.color }"
-                data-category="${ item.category_name }"
-                data-name="${ item.name }"
-                data-id="${ item.id }">
-                ${ item.name }
-              </option>`;
-
-              TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
-            });
-
-          })
-
-  }
 
   /*--------------------- Удаление тэга (включает удаление из БД и удаление из поля выбранных тэгов) --------------------*/
   // Не знаю, что лучше, просто выполнить remove или обновить тэги
@@ -313,8 +334,41 @@ $(document).ready(function () {
         });
 
         TAGCONTAINER.append(result);
+        TRACKTAGCONTAINER.append(result);
         getTags();
       })
+  }
+
+  /*------------------------ Получение и вывод тэгов-----------------------------------------*/
+  function getTags() {
+    TAGCONTAINER.find('option').empty();
+    TRACKTAGCONTAINER.find('option').empty();
+
+    axios.get('/tags')
+        .then(function (response) {
+
+          let result = "";
+          let tags = response.data.data;
+
+
+          tags.forEach(function (item) {
+
+            let tagTemplate = `
+              <option
+                value="${ item.name }"
+                data-color="${ item.color }"
+                data-category="${ item.category_name }"
+                data-name="${ item.name }"
+                data-id="${ item.id }">
+                ${ item.name }
+              </option>`;
+
+            TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
+            TRACKTAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
+          });
+
+        })
+
   }
 
   /*------------------------Получение списка трэков -----------------------------*/
@@ -350,12 +404,12 @@ $(document).ready(function () {
                         ${item.name}
                     </div>
                     <div class="col-1">
-                        <a class="btn" data-toggle="modal" data-target="#deleteModal">
+                        <a class="btn" data-toggle="modal" data-target="#deleteModal" data-btn-type="ask_delete_track">
                             <span class="fas fa-trash-alt btn-delete"/>
                         </a>
                     </div>
                     <div class="col-1">
-                        <a class="btn" data-toggle="modal" data-target="#exampleModal" data-btn-type="edit_card">
+                        <a class="btn"  data-btn-type="edit_card">
                             <span class="fas fa-edit"/>
                         </a>
                     </div>
@@ -402,6 +456,13 @@ $(document).ready(function () {
   /*--------------------- Подготовка параметров поиска ----------------------*/
 
   function prepareParams() {
+
+    let tagsArray = [];
+
+    SELECTEDTAGS.find('.tag').each(function (tag) {
+      tagsArray.push($(this).data().id)
+    });
+
     params = {
       row: 0,
       start_date: $("input[name='start_date']").val(),

@@ -43,8 +43,9 @@ class TrackController extends AbstractController
     move_uploaded_file($tmp_path, $fileDir.'/'.$path);
 
     $track->addNewTrack($originalFilename, $path, $datetime, NULL);
+    $id = $track->getTracksIDByPath($path);
 
-    return $this->json(['status' => "OK", 'message' => [], 'data' => []]);
+    return $this->json(['status' => "OK", 'message' => [], 'data' => $id]);
   }
 
   public function updateFileInfo(Request $request, $fileID, ParameterBagInterface $params, LibTrack $track)

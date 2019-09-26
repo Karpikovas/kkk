@@ -57,37 +57,37 @@
 
 {#      </div>#}
 
-{#      <div class="collapse mt-3" id="newTag">#}
+      {#<div class="collapse mt-3" id="newTag">#}
 
-{#        <div class="mb-3">#}
-{#          Добавить новый тэг#}
-{#        </div>#}
+        {#<div class="mb-3">#}
+          {#Добавить новый тэг#}
+        {#</div>#}
 
-{#        <div class="input-group input-group-sm mb-3">#}
+        {#<div class="input-group input-group-sm mb-3">#}
 
-{#          <div class="input-group-prepend">#}
-{#            <select class="form-control form-control-sm" data-select-type="new-tags-list">#}
+          {#<div class="input-group-prepend">#}
+            {#<select class="form-control form-control-sm" data-select-type="new-tags-list">#}
 
-{#            </select>#}
-{#          </div>#}
+            {#</select>#}
+          {#</div>#}
 
-{#          <input type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>#}
+          {#<input type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>#}
 
-{#        </div>#}
+        {#</div>#}
 
-{#        <div class="row">#}
-{#          <div class="col-5">#}
-{#            Выберите цвет:#}
-{#          </div>#}
-{#          <div class="col-3">#}
-{#            <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">#}
-{#          </div>#}
-{#          <div class="col">#}
-{#            <button type="button" class="btn btn-success btn-sm" data-btn-type="btn-new-tag">Добавить</button>#}
-{#          </div>#}
-{#        </div>#}
+        {#<div class="row">#}
+          {#<div class="col-5">#}
+            {#Выберите цвет:#}
+          {#</div>#}
+          {#<div class="col-3">#}
+            {#<input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">#}
+          {#</div>#}
+          {#<div class="col">#}
+            {#<button type="button" class="btn btn-success btn-sm" data-btn-type="btn-new-tag">Добавить</button>#}
+          {#</div>#}
+        {#</div>#}
 
-{#      </div>#}
+      {#</div>#}
 
 {#    </li>#}
 
@@ -130,7 +130,7 @@
   <div class="container"></div>
 
   <!--------------Модальное окно редактирования аудио------------------->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -168,7 +168,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Сохранить изменения</button>
+          <button type="button" class="btn btn-primary" data-btn-type="save_track">Сохранить изменения</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
         </div>
       </div>
@@ -176,7 +176,7 @@
   </div>
 
   <!--------------------Модальное окно удаления трека------------------->
-  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true" data-id="">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -189,7 +189,7 @@
           <p>Удалить всю информацию о данном треке?</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger">Удалить</button>
+          <button type="button" class="btn btn-danger" data-btn-type="delete_track">Удалить</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
         </div>
       </div>
