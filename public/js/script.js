@@ -18,6 +18,7 @@ $(document).ready(function () {
   const SPINNER = '<div class="label_download">Загрузка...</div>';
 
   var inProgress = false;
+  var player;
 
 
   /* ------------ Параметры запроса аудио ----------------- */
@@ -29,12 +30,19 @@ $(document).ready(function () {
     tags: null
   };
 
+  var deletedTags = [];
+
   /* ---------- Начальная инициализация ----------------------*/
 
   function init() {
     getTracks();
     getCategories();
     bindEvents();
+
+    player = new Player();
+    player.init()
+
+
   }
 
   function bindEvents() {
@@ -112,14 +120,51 @@ $(document).ready(function () {
       askDeleteTrack($(this).parents('.card').data().id)
     });
 
+    $('#accordion').on('click', 'button.btn.btn-link', function (event) {
+      $(this).parents('.card').find('>.collapse').collapse('toggle');
+
+    });
+
+    $('#accordion').on('click', 'a.btn', function (event) {
+      openNewTagControl($(this).parent());
+    });
+
+    $("#editTags").on("hidden.bs.modal", function () {
+      onCloseEditModal();
+    });
+
+    $('*[data-btn-type="save_tag_changes"]').on('click', function (event) {
+
+      $('#editTags').off('hidden.bs.modal');
+      $('#editTags').modal('hide');
+      saveTagsChanges();
+      setTimeout(function() {
+        $('#editTags').on('hidden.bs.modal', function(event) {
+          onCloseEditModal();
+        });
+      }, 1000);
+
+    });
+
+
+
+    $('#accordion').on('keyup', 'input[name="tag-name"]', function(event){
+      if(event.keyCode === 13){
+        event.preventDefault();
+        appendNewTag($(this));
+      }
+    });
+
     // TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
 
     /*----------------- Удаление тэга из БД пр клике на крестик -------------------------*/
 
-    // TAGCONTAINER.on('click', '.tag > .close', function (event) {
-    //   event.stopPropagation();
-    //   removeTag($(this).parent())
-    // });
+    $('#accordion').on('click', '.tag > .close', function (event) {
+      if ($(this).parent().data().id !== "new")
+        deletedTags.push($(this).parent().data().id);
+      $(this).parent().hide();
+      console.log(deletedTags);
+    });
 
 
     // SELECTEDTAGS.on('click', '.tag > .close', function (event) {  removeSelectedTag($(this).parent()) });
@@ -129,6 +174,64 @@ $(document).ready(function () {
 
   }
 
+  function saveTagsChanges() {
+
+    $("#accordion .card .badge[data-id='new']").each(function () {
+
+      let newTag = {
+        name: $(this).data().name,
+        color: $(this).data().color,
+        category_name: $(this).data().category
+      };
+
+      //console.log(newTag);
+
+
+      axios.post('/tags/add', newTag);
+    });
+
+    deletedTags.forEach(function (tag) {
+      axios.post(`/tags/delete/${ tag }`)
+    });
+
+    deletedTags = [];
+
+    getTags();
+
+  }
+
+  function onCloseEditModal() {
+    $("#accordion .card .badge").show();
+    $("#accordion .card .badge[data-id='new']").remove();
+  }
+  function appendNewTag(input) {
+    // Проверка валидации
+    if (input[0].checkValidity()) {
+
+      let color = input.parents('.card').find('input[name="tag-color"]').val();
+      let category = input.parents('.card').data().category;
+      let name = input.val();
+
+
+      let tagTemplate = `
+      <span
+        class="badge badge-pill tag"
+        style="background: ${ color }"
+        data-color="${ color }"
+        data-category="${ category }"
+        data-name="${ name }"
+        data-id="new">
+        ${ name }
+
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </span>`;
+
+      $(tagTemplate).insertBefore($(`#accordion .card[data-category="${ category }"]`).find('a.btn'));
+    }
+    input.val('');
+  }
   /*---------------- Сохранение файла на сервер и открытие окна редактирования --------------------------*/
 
   function uploadFile() {
@@ -266,6 +369,8 @@ $(document).ready(function () {
           let result = "";
           let categories = response.data.data;
 
+          appendCategoriesToEditModal(categories);
+
           categories.forEach(function (item) {
             let category = `<optgroup label="${ item.name }"></optgroup>`;
             result += category;
@@ -277,6 +382,98 @@ $(document).ready(function () {
         })
   }
 
+  /*-------------- Добавление категорий тэгов в модальное окно их редактирования -----------------------*/
+  function appendCategoriesToEditModal(categories) {
+    let result = "";
+
+    categories.forEach(function (item) {
+      let category = `<div class="card" data-category="${ item.name }">
+
+                        <div class="card-header">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" aria-expanded="true" >
+                              ${ item.name }
+                            </button>
+                          </h5>
+                        </div>
+                        
+                        <div class="collapse"  data-parent="#accordion">
+                          <div class="card-body">
+                            
+                            <div class="text-left" data-tags-list-type="selected">
+          
+                              <a class="btn" >
+                                <span class="fas fa-plus-circle btn-new-tag" ></span>
+                              </a>
+          
+                              <div class="collapse mt-3" >
+                                <div class="input-group mb-3">
+                                  <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    placeholder="Название тэга" 
+                                    name="tag-name" required>
+                                    
+                                  <div class="input-group-append">
+                                    <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">
+                                  </div>
+                                  
+                                </div>
+                                
+                              </div>
+          
+                            </div>
+                          </div>
+                        </div>
+                      </div>`;
+      result += category;
+    });
+    $('#accordion').append(result);
+    $('#accordion').find('.card:first-child > .collapse').collapse('show');
+  }
+
+  function openNewTagControl(area) {
+    area.find('.collapse').collapse('toggle');
+    toggleIcon(area);
+
+  }
+
+  /*-------------- Добавление тэгов в модальное окно их редактирования -----------------------*/
+  function appendTagsToEditModal(tags) {
+    $('#accordion .card').find('span').empty();
+    tags.forEach(function (tag) {
+
+      let tagTemplate = `
+        <span
+          class="badge badge-pill tag"
+          style="background: ${ tag.color }"
+          data-category="${ tag.category_name }"
+          data-name="${ tag.name }"
+          data-id="${ tag.id }">
+          ${ tag.name }
+
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </span>`;
+
+      $(tagTemplate).insertBefore($(`#accordion .card[data-category="${ tag.category_name }"]`).find('a.btn'));
+    });
+  }
+
+  function toggleIcon(area) {
+    let icon = area.find('a.btn span');
+
+    if (icon.hasClass('fa-plus-circle')) {
+      icon.removeClass('fa-plus-circle');
+      icon.addClass('fa-times-circle');
+    } else {
+      icon.addClass('fa-plus-circle');
+      icon.removeClass('fa-times-circle');
+    }
+
+  }
+
   /*------------------------ Получение и вывод тэгов-----------------------------------------*/
 
   function getTags() {
@@ -286,9 +483,9 @@ $(document).ready(function () {
     axios.get('/tags')
         .then(function (response) {
 
-          let result = "";
           let tags = response.data.data;
 
+          appendTagsToEditModal(tags);
 
           tags.forEach(function (item) {
 
@@ -302,8 +499,8 @@ $(document).ready(function () {
                 ${ item.name }
               </option>`;
 
-            TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
-            TRACKTAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate)
+            TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate);
+            TRACKTAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate);
           });
 
         })
@@ -384,6 +581,10 @@ $(document).ready(function () {
             result += cardTemplate;
           });
           CONTAINER.append(result);
+
+          $('audio-control').each(function (control) {
+            player.bindAudioEvents($(this));
+          })
 
         })
         .catch(function (error) {

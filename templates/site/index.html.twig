@@ -102,7 +102,7 @@
         <select class="form-control" data-tags-list-type="all">
         </select>
 
-        <a class="btn " data-toggle="collapse" data-target="#newTag">
+        <a class="btn " data-toggle="modal" data-target="#editTags">
           <span class="fas fa-edit btn-new-tag" ></span>
         </a>
 
@@ -196,6 +196,38 @@
     </div>
   </div>
 
+  <!--------------------Модальное окно редактирования тэгов------------------->
+  <div class="modal fade" id="editTags" tabindex="-1" role="dialog"  aria-hidden="true" data-id="">
+    <div class="modal-dialog" role="document">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Редактирование тэгов</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div id="accordion">
+
+
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-btn-type="save_tag_changes">Применить</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
 
 {% endblock %}
 
@@ -205,4 +237,5 @@
   <script src="js/components/SimpleSlider.js"></script>
   <script src="js/components/VolumeSlider.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/player.js"></script>
 {% endblock %}

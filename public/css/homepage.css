@@ -45,10 +45,12 @@
     color: black;
 }
 
-.card {
+.container > .card,
+.nav-item > .card {
     background: #4B0082;
     margin-top: 2em;
 }
+
 
 div.card-header a {
     padding: 0;
@@ -56,6 +58,9 @@ div.card-header a {
 .modal {
     color: black;
     font-size: 16px;
+}
+.modal .fas {
+    color: black
 }
 
 .text-muted {

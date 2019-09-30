@@ -10,7 +10,7 @@ volumeTemplate.innerHTML = `
       align-items: center;
    }
     .audio__item {
-      font-size: 20px;
+      font-size: 18px;
       color: white;
       background-color: Transparent;
       background-repeat:no-repeat;
