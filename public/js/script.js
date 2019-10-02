@@ -115,7 +115,7 @@ $(document).ready(function () {
 
     $('*[data-btn-type="save_track"]').on('click', function (event) {
       saveTracksInfo($('#modalInfo').data().id);
-      search();
+
     });
 
 
@@ -330,6 +330,7 @@ $(document).ready(function () {
       tags: tagsArray.join(' ')
     })
         .then(function (response) {
+          search();
           $('#modalInfo').modal('hide');
         })
         .catch(function (error) {
