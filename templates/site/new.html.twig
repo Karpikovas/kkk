@@ -56,11 +56,33 @@
                                             <div class="collapse mt-3" >
 
                                                 <div class="input-group mb-3">
+                                                    <label for="validationCustom01">First name</label>
+                                                    <input id="validationCustom01" aria-describedby="emailHelp" type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
 
-                                                    <input type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
                                                     <div class="input-group-append">
                                                         <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <div class="form-row">
+                                                        <div class="col-8 mb-3">
+                                                            <label for="validationCustom01">Название</label>
+                                                            <input id="validationCustom01" aria-describedby="emailHelp" type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
+                                                            <div class="invalid-feedback">
+                                                                Название не должно быть пустым.
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-2 mb-3">
+                                                            <label for="validationCustom02">Цвет</label>
+                                                            <input id="validationCustom02" type="color" value="#e66465" class="form-control" placeholder="Цвет тэга" name="tag-color">
+                                                        </div>
+                                                        <div class="col mb-3">
+                                                            <button type="button" class="btn btn-success" style="position: absolute; bottom: 0">
+                                                                <i class="fas fa-chevron-down"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>

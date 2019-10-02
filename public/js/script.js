@@ -4,25 +4,32 @@ $(document).ready(function () {
 
   /*------- Контейнеры для тэгов (выбранных/невыбранных) в поле поиска ------------------*/
 
-  const TAGCONTAINER = $('*[data-tags-list-type="all"]');
-  const TRACKTAGCONTAINER = $('*[data-form-type="tags_all"]');
+  const ALL_TAGS = $('*[data-tags-list-type="all"]');
+  const SELECTED_TAGS = $('*[data-tags-list-type="selected"]');
+
 
   /*------- Контейнеры для тэгов (выбранных/невыбранных) в окне редактирования трека ------*/
 
-  const SELECTEDTAGS = $('*[data-tags-list-type="selected"]');
-  const TRACKSELECTEDTAGS = $('*[data-form-type="tags_selected"]');
+  const TRACK_ALL_TAGS = $('*[data-form-type="tags_all"]');
+  const TRACK_SELECTED_TAGS = $('*[data-form-type="tags_selected"]');
 
-  const INPUTSEARCH = $('input[name="search"]');
-  const INPUTFILE = $('input[name="file"]');
+  const INPUT_SEARCH = $('input[name="search"]');
+  const INPUT_FILE = $('input[name="file"]');
+
+  const EDIT_TAGS = $('#accordion');
 
   const SPINNER = '<div class="label_download">Загрузка...</div>';
 
   var inProgress = false;
   var player;
 
+  var tagInfo = {
+    isDeleted: false,
+    isNew:false
+  };
 
   /* ------------ Параметры запроса аудио ----------------- */
-  var params = {
+  var searchTracksParams = {
     row: 0,
     start_date: null,
     end_date: null,
@@ -30,7 +37,9 @@ $(document).ready(function () {
     tags: null
   };
 
-  var deletedTags = [];
+
+  var categoriesAndTags;
+  var currentCategoriesAndTags;
 
   /* ---------- Начальная инициализация ----------------------*/
 
@@ -41,8 +50,6 @@ $(document).ready(function () {
 
     player = new Player();
     player.init()
-
-
   }
 
   function bindEvents() {
@@ -57,35 +64,46 @@ $(document).ready(function () {
 
     /*----------------- Добавление тэга в "выбранные" при клике на тэг (КОНТЕЙНЕР ПОИСКА)-----------------*/
 
-    TAGCONTAINER.on('change', function (event) { selectTag(TAGCONTAINER, SELECTEDTAGS) });
+    ALL_TAGS.on('change', function (event) {
+      selectTag(ALL_TAGS, SELECTED_TAGS);
+
+    });
 
 
     /*---------- Удаление тэга из списка выбранных и возвращение в список (КОНТЕЙНЕР ПОИСКА) ------------------*/
 
-    SELECTEDTAGS.on('click', '.tag', function (event) { returnTag($(this), TAGCONTAINER); });
+    SELECTED_TAGS.on('click', '.tag', function (event) { returnTag($(this), ALL_TAGS); });
 
 
     /*----------------- Добавление тэга в "выбранные" при клике на тэг (КОНТЕЙНЕР В РЕДАКТИРОВАНИИ ТРЕКА)-----------------*/
 
-    TRACKTAGCONTAINER.on('change', function (event) { selectTag(TRACKTAGCONTAINER, TRACKSELECTEDTAGS) });
+    TRACK_ALL_TAGS.on('change', function (event) {
+      selectTag(TRACK_ALL_TAGS, TRACK_SELECTED_TAGS);
+
+    });
 
 
     /*---------- Удаление тэга из списка выбранных и возвращение в список (КОНТЕЙНЕР В РЕДАКТИРОВАНИИ ТРЕКА) -------------*/
 
-    TRACKSELECTEDTAGS.on('click', '.tag', function (event) { returnTag($(this), TRACKTAGCONTAINER); });
+    TRACK_SELECTED_TAGS.on('click', '.tag', function (event) { returnTag($(this), TRACK_ALL_TAGS); });
 
 
     /*------------------------------ Загрузка файла на сервер ---------------------------*/
 
-    INPUTFILE.on('change', function(event){ uploadFile() });
+    INPUT_FILE.on('change', function(event){ uploadFile() });
 
     /*---------------- Поиск при нажатии enter в поле поиска -----------------------*/
 
-    INPUTSEARCH.keyup(function(event){
+    INPUT_SEARCH.keyup(function(event){
       if(event.keyCode === 13){
         event.preventDefault();
         search();
       }
+    });
+
+    EDIT_TAGS.on('submit', 'form', function (event) {
+      event.preventDefault();
+      event.stopPropagation()
     });
 
     /*------------------- Поиск при клике на кнопку "Применить" ---------------------------*/
@@ -96,7 +114,8 @@ $(document).ready(function () {
     /*------------------- Сохранение информации о треке при редактировании -------------------------*/
 
     $('*[data-btn-type="save_track"]').on('click', function (event) {
-      saveTracksInfo($('#modalInfo').data().id)
+      saveTracksInfo($('#modalInfo').data().id);
+      search();
     });
 
 
@@ -120,50 +139,62 @@ $(document).ready(function () {
       askDeleteTrack($(this).parents('.card').data().id)
     });
 
-    $('#accordion').on('click', 'button.btn.btn-link', function (event) {
+    EDIT_TAGS.on('click', 'button.btn.btn-link', function (event) {
       $(this).parents('.card').find('>.collapse').collapse('toggle');
 
     });
 
-    $('#accordion').on('click', 'a.btn', function (event) {
+    EDIT_TAGS.on('click', 'a.btn', function (event) {
       openNewTagControl($(this).parent());
     });
 
-    $("#editTags").on("hidden.bs.modal", function () {
-      onCloseEditModal();
-    });
 
     $('*[data-btn-type="save_tag_changes"]').on('click', function (event) {
 
-      $('#editTags').off('hidden.bs.modal');
       $('#editTags').modal('hide');
       saveTagsChanges();
-      setTimeout(function() {
-        $('#editTags').on('hidden.bs.modal', function(event) {
-          onCloseEditModal();
-        });
-      }, 1000);
 
     });
 
+    $('.btn-new-tag').on('click', function (e) {
+      appendCategoriesAndTagsToEditModal();
+    });
 
 
-    $('#accordion').on('keyup', 'input[name="tag-name"]', function(event){
+    EDIT_TAGS.on('keyup', 'input[name="tag-name"]', function(event){
       if(event.keyCode === 13){
         event.preventDefault();
+        event.stopPropagation();
         appendNewTag($(this));
       }
+    });
+
+    EDIT_TAGS.on('click', 'button.btn.btn-success', function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      appendNewTag( $(this));
     });
 
     // TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
 
     /*----------------- Удаление тэга из БД пр клике на крестик -------------------------*/
 
-    $('#accordion').on('click', '.tag > .close', function (event) {
-      if ($(this).parent().data().id !== "new")
-        deletedTags.push($(this).parent().data().id);
+    EDIT_TAGS.on('click', '.tag > .close', function (event) {
+
+      let id = $(this).parent().data().id.toString();
+
+      let objIndex = currentCategoriesAndTags.findIndex((obj => obj.name === $(this).parent().data().category));
+      let tagIndex = currentCategoriesAndTags[objIndex].tags.findIndex((obj => obj.id === id));
+
+      if (id.indexOf('new') === -1 ) {
+
+        currentCategoriesAndTags[objIndex].tags[tagIndex].isDelete = true;
+      } else {
+        currentCategoriesAndTags[objIndex].tags.splice(tagIndex, 1);
+      }
+
       $(this).parent().hide();
-      console.log(deletedTags);
+
     });
 
 
@@ -176,42 +207,74 @@ $(document).ready(function () {
 
   function saveTagsChanges() {
 
-    $("#accordion .card .badge[data-id='new']").each(function () {
+    let promises =[];
 
-      let newTag = {
-        name: $(this).data().name,
-        color: $(this).data().color,
-        category_name: $(this).data().category
-      };
+    let newTags = currentCategoriesAndTags.reduce((a, obj) => {
+      let filtered = obj.tags.filter(({isNew}) => true === isNew);
 
-      //console.log(newTag);
+      if (filtered.length) {
+
+        filtered.forEach(function (tag) {
+          let newTag = {
+            name: tag.name,
+            color: tag.color,
+            category_name: tag.category_name
+          };
+
+          console.log(newTag);
+          promises.push(axios.post('/tags/add', newTag));
+        });
+      }
+      return a;
+    }, []);
 
 
-      axios.post('/tags/add', newTag);
-    });
+    let tagsToDelete = currentCategoriesAndTags.reduce((a, obj) => {
+      let filtered = obj.tags.filter(({isDelete}) => true === isDelete);
 
-    deletedTags.forEach(function (tag) {
-      axios.post(`/tags/delete/${ tag }`)
-    });
+      if (filtered.length) {
 
-    deletedTags = [];
+        filtered.forEach(function (tag) {
+          SELECTED_TAGS.find(`.badge[data-id="${tag.id}"]`).remove();
+          promises.push(axios.post(`/tags/delete/${ tag.id }`));
+        });
+      }
+      return a;
+    }, []);
 
-    getTags();
+    axios.all(promises)
+      .then(function() {
+        categoriesAndTags.forEach(function (category) {
+          category.tags = [];
+        });
+        getTags();
+      });
+
 
   }
 
-  function onCloseEditModal() {
-    $("#accordion .card .badge").show();
-    $("#accordion .card .badge[data-id='new']").remove();
-  }
-  function appendNewTag(input) {
+  function appendNewTag(area) {
+
+    let input = area.parents('.card').find('input[name="tag-name"]');
     // Проверка валидации
     if (input[0].checkValidity()) {
 
-      let color = input.parents('.card').find('input[name="tag-color"]').val();
-      let category = input.parents('.card').data().category;
+      let color = area.parents('.card').find('input[name="tag-color"]').val();
+      let category = area.parents('.card').data().category;
       let name = input.val();
 
+      let newTag = {
+        id: 'new_' + name,
+        name: name,
+        category_name: category,
+        color: color,
+      };
+
+      newTag = Object.assign(newTag, tagInfo);
+      newTag.isNew = true;
+
+      let objIndex = currentCategoriesAndTags.findIndex((obj => obj.name === category));
+      currentCategoriesAndTags[objIndex].tags = [...currentCategoriesAndTags[objIndex].tags, ...[newTag]];
 
       let tagTemplate = `
       <span
@@ -220,7 +283,7 @@ $(document).ready(function () {
         data-color="${ color }"
         data-category="${ category }"
         data-name="${ name }"
-        data-id="new">
+        data-id="new_${ name }">
         ${ name }
 
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -228,14 +291,15 @@ $(document).ready(function () {
         </button>
       </span>`;
 
-      $(tagTemplate).insertBefore($(`#accordion .card[data-category="${ category }"]`).find('a.btn'));
+      $(tagTemplate).insertBefore(EDIT_TAGS.find(`.card[data-category="${ category }"] a.btn`));
+      input.val('');
     }
-    input.val('');
+
   }
   /*---------------- Сохранение файла на сервер и открытие окна редактирования --------------------------*/
 
   function uploadFile() {
-    let track = INPUTFILE[0].files[0];
+    let track = INPUT_FILE[0].files[0];
     let formData = new FormData();
 
     formData.append("path", track);
@@ -256,7 +320,7 @@ $(document).ready(function () {
   function saveTracksInfo(ID) {
     let tagsArray = [];
 
-    TRACKSELECTEDTAGS.find('.tag').each(function (tag) {
+    TRACK_SELECTED_TAGS.find('.tag').each(function (tag) {
       tagsArray.push($(this).data().id)
     });
 
@@ -277,7 +341,7 @@ $(document).ready(function () {
 
   function getTracksInfo(track) {
 
-    TRACKTAGCONTAINER.find('option').show();
+    TRACK_SELECTED_TAGS.find('option').show();
 
     axios.get(`/tracks/${ track }`)
         .then(function (response) {
@@ -299,15 +363,15 @@ $(document).ready(function () {
                 data-name="${ tag.name }"
                 data-id="${ tag.id }">
                 ${ tag.name }
-      
+                <span >&times;</span>
               </span>`;
 
-            let tagSelected = TRACKTAGCONTAINER.find(`option[data-category="${ tag.category_name }"][value="${tag.name}"]`);
+            let tagSelected = TRACK_ALL_TAGS.find(`option[value=${ tag.name }][data-category="${ tag.category_name}"]`);
             tagSelected.hide();
             result += tagTemplate;
           });
 
-          TRACKSELECTEDTAGS.html('Выбранные тэги:' +  result);
+          TRACK_SELECTED_TAGS.html('Выбранные тэги:' +  result);
 
           $('#modalInfo').modal('show');
           $('#modalInfo').data('id', track.id)
@@ -334,7 +398,7 @@ $(document).ready(function () {
   /* ---------------------- Возвращение тэга в список ------------------- */
 
   function returnTag(span, tagContainer) {
-    let value = span.text();
+    let value = span.data().name.toString();
     let category = span.data().category;
     tagContainer.find($(`option[value=${value}][data-category="${category}"]`)).show();
     span.remove();
@@ -353,10 +417,12 @@ $(document).ready(function () {
           data-name="${ tag.data().name }"
           data-id="${ tag.data().id }">
           ${ tag.val() }
+           <span aria-hidden="true">&times;</span>
 
         </span>`;
 
     selectedTags.append(tagTemplate);
+    tagContainer.find('option:first').prop('selected', true);
     tag.hide();
   }
 
@@ -369,24 +435,36 @@ $(document).ready(function () {
           let result = "";
           let categories = response.data.data;
 
-          appendCategoriesToEditModal(categories);
+          categoriesAndTags = Object.assign([], categories);
+          categoriesAndTags = categoriesAndTags.map(function (category) {
+            return Object.assign({}, category, { tags: [] });
+          });
 
           categories.forEach(function (item) {
             let category = `<optgroup label="${ item.name }"></optgroup>`;
             result += category;
           });
 
-          TAGCONTAINER.append(result);
-          TRACKTAGCONTAINER.append(result);
+          let defaultOption = '<option selected value="">Выберите тэг...</option>';
+
+          ALL_TAGS.append(defaultOption);
+          ALL_TAGS.append(result);
+
+          TRACK_ALL_TAGS.append(defaultOption);
+          TRACK_ALL_TAGS.append(result);
+
           getTags();
         })
   }
 
   /*-------------- Добавление категорий тэгов в модальное окно их редактирования -----------------------*/
-  function appendCategoriesToEditModal(categories) {
+  function appendCategoriesAndTagsToEditModal() {
     let result = "";
 
-    categories.forEach(function (item) {
+    currentCategoriesAndTags = JSON.parse(JSON.stringify(categoriesAndTags));
+
+
+    currentCategoriesAndTags.forEach(function (item) {
       let category = `<div class="card" data-category="${ item.name }">
 
                         <div class="card-header">
@@ -400,50 +478,10 @@ $(document).ready(function () {
                         <div class="collapse"  data-parent="#accordion">
                           <div class="card-body">
                             
-                            <div class="text-left" data-tags-list-type="selected">
-          
-                              <a class="btn" >
-                                <span class="fas fa-plus-circle btn-new-tag" ></span>
-                              </a>
-          
-                              <div class="collapse mt-3" >
-                                <div class="input-group mb-3">
-                                  <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    placeholder="Название тэга" 
-                                    name="tag-name" required>
-                                    
-                                  <div class="input-group-append">
-                                    <input type="color" value="#e66465" placeholder="Цвет тэга" name="tag-color">
-                                  </div>
-                                  
-                                </div>
-                                
-                              </div>
-          
-                            </div>
-                          </div>
-                        </div>
-                      </div>`;
-      result += category;
-    });
-    $('#accordion').append(result);
-    $('#accordion').find('.card:first-child > .collapse').collapse('show');
-  }
+                            <div class="text-left" data-tags-list-type="selected">`;
 
-  function openNewTagControl(area) {
-    area.find('.collapse').collapse('toggle');
-    toggleIcon(area);
-
-  }
-
-  /*-------------- Добавление тэгов в модальное окно их редактирования -----------------------*/
-  function appendTagsToEditModal(tags) {
-    $('#accordion .card').find('span').empty();
-    tags.forEach(function (tag) {
-
-      let tagTemplate = `
+      item.tags.forEach(function (tag) {
+        let tagTemplate = `
         <span
           class="badge badge-pill tag"
           style="background: ${ tag.color }"
@@ -451,16 +489,59 @@ $(document).ready(function () {
           data-name="${ tag.name }"
           data-id="${ tag.id }">
           ${ tag.name }
-
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-          </button>
+          <span aria-hidden="true">&times;</span>
         </span>`;
+        category += tagTemplate;
+      });
 
-      $(tagTemplate).insertBefore($(`#accordion .card[data-category="${ tag.category_name }"]`).find('a.btn'));
+      category +=`<a class="btn" >
+                <span class="fas fa-plus-circle btn-new-tag" ></span>
+              </a>
+
+              <div class="collapse mt-3" >
+                  <form class="form-row was-validated"  novalidate="">
+                      <div class="col-8">
+                          <label for="validationCustom01">Название</label>
+                          <input id="validationCustom01" type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
+                          <div class="invalid-feedback">
+                              Название не должно быть пустым.
+                          </div>
+                      </div>
+                      <div class="col-2">
+                          <label for="validationCustom02">Цвет</label>
+                          <input id="validationCustom02" type="color" value="#e66465" class="form-control" placeholder="Цвет тэга" name="tag-color">
+                      </div>
+                      <div class="col-2">
+                          <button type="button" class="btn btn-success" >
+                              <i class="fas fa-chevron-down text-light"></i>
+                          </button>
+                      </div>
+                  </form>
+                
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>`;
+      result += category;
     });
+
+    EDIT_TAGS.html(result);
+    EDIT_TAGS.find('.card:first-child > .collapse').collapse('show');
+
+    $('#editTags').modal('show');
   }
 
+  /*--------------------- Открытие панели добавления нового тэга ----------------------*/
+  function openNewTagControl(area) {
+    area.find('.collapse').collapse('toggle');
+    area.find('input#validationCustom01.form-control').focus();
+    toggleIcon(area);
+
+  }
+
+  /*----------------------- Изменение иконки добавления новго тэга--------------------------*/
   function toggleIcon(area) {
     let icon = area.find('a.btn span');
 
@@ -471,21 +552,18 @@ $(document).ready(function () {
       icon.addClass('fa-plus-circle');
       icon.removeClass('fa-times-circle');
     }
-
   }
-
   /*------------------------ Получение и вывод тэгов-----------------------------------------*/
 
   function getTags() {
-    TAGCONTAINER.find('option').empty();
-    TRACKTAGCONTAINER.find('option').empty();
+    ALL_TAGS.find('optgroup').empty();
+    TRACK_ALL_TAGS.find('optgroup').empty();
 
     axios.get('/tags')
         .then(function (response) {
 
           let tags = response.data.data;
 
-          appendTagsToEditModal(tags);
 
           tags.forEach(function (item) {
 
@@ -499,11 +577,15 @@ $(document).ready(function () {
                 ${ item.name }
               </option>`;
 
-            TAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate);
-            TRACKTAGCONTAINER.find(`optgroup[label=${item.category_name}]`).append(tagTemplate);
+            let objIndex = categoriesAndTags.findIndex((obj => obj.name === item.category_name));
+
+            categoriesAndTags[objIndex].tags = [...categoriesAndTags[objIndex].tags, ...[Object.assign(item, tagInfo)]];
+
+            ALL_TAGS.find(`optgroup[label=${item.category_name}]`).append(tagTemplate);
+            TRACK_ALL_TAGS.find(`optgroup[label=${item.category_name}]`).append(tagTemplate);
           });
 
-        })
+        });
 
   }
 
@@ -514,13 +596,13 @@ $(document).ready(function () {
     CONTAINER.append(SPINNER);
 
     axios.get('/tracks', {
-      params: params
+      params: searchTracksParams
     })
         .then(function (response) {
 
           $(".label_download").remove();
 
-          params.row += 10;
+          searchTracksParams.row += 10;
 
           let result = "";
           let tracks = response.data.data;
@@ -598,15 +680,15 @@ $(document).ready(function () {
 
     let tagsArray = [];
 
-    SELECTEDTAGS.find('.tag').each(function (tag) {
+    SELECTED_TAGS.find('.tag').each(function (tag) {
       tagsArray.push($(this).data().id)
     });
 
-    params = {
+    searchTracksParams = {
       row: 0,
       start_date: $("input[name='start_date']").val(),
       end_date: $("input[name='end_date']").val(),
-      key: INPUTSEARCH.val(),
+      key: INPUT_SEARCH.val(),
       tags: tagsArray.join(' ')
     };
   }
@@ -620,57 +702,6 @@ $(document).ready(function () {
   }
 
   init();
-  /*--------------------- Удаление тэга (включает удаление из БД и удаление из поля выбранных тэгов) --------------------*/
-  // Не знаю, что лучше, просто выполнить remove или обновить тэги
-  // function removeTag(tag) {
-  //
-  //   axios.post(`/tags/delete/${ tag.data().id }`)
-  //     .then(function (response) {
-  //
-  //       removeSelectedTag(tag);
-  //       tag.remove();
-  //       // getTags(INPUTCATEGORY.val());
-  //     })
-  // }
-
-  /*------------------------ Удаление тэга из поля выбранных ----------------------------*/
-  // function removeSelectedTag(tag) {
-  //
-  //   for(let i = 0; i < tagsArray.length; i++){
-  //     if ( tagsArray[i] === tag.data().id) {
-  //       tagsArray.splice(i, 1);
-  //       SELECTEDTAGS.find($(`*[data-id=${tag.data().id}]`)).remove();
-  //       break;
-  //     }
-  //   }
-  // }
-
-  /*------------------------ Добавление нового тэга ----------------------------------*/
-  // function addNewTag() {
-  //   let nameInput = $('input[name="tag-name"]');
-  //   let colorInput = $('input[name="tag-color"]');
-  //   let categoryInput = $('*[data-select-type="new-tags-list"]');
-  //
-  //   // Проверка валидации
-  //   if (nameInput[0].checkValidity()) {
-  //
-  //     let newTag = {
-  //       name: nameInput.val(),
-  //       color: colorInput.val(),
-  //       category_name: categoryInput.val()
-  //     };
-  //
-  //     axios.post('/tags/add', newTag)
-  //       .then(function (response) {
-  //         if (categoryInput.val() === INPUTCATEGORY.val()) {
-  //           getTags(INPUTCATEGORY.val())
-  //         }
-  //       })
-  //   }
-  // }
-
-
-
 
 });
 
