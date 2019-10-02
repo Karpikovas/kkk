@@ -139,15 +139,20 @@ $(document).ready(function () {
       askDeleteTrack($(this).parents('.card').data().id)
     });
 
+    /*--------------------- Открытие категории с тэгами в окне редактирования ---------------------*/ъ
+
     EDIT_TAGS.on('click', 'button.btn.btn-link', function (event) {
       $(this).parents('.card').find('>.collapse').collapse('toggle');
 
     });
 
+    /*------------------------- Открытие панели добавления нового тэга ------------------------*/
+
     EDIT_TAGS.on('click', 'a.btn', function (event) {
       openNewTagControl($(this).parent());
     });
 
+    /*----------------------- Сохранение изменений в тэгах --------------------------------*/
 
     $('*[data-btn-type="save_tag_changes"]').on('click', function (event) {
 
@@ -156,10 +161,13 @@ $(document).ready(function () {
 
     });
 
+    /*-------------------- Открытие окна редактирования тэгов -------------------------*/
+
     $('.btn-new-tag').on('click', function (e) {
       appendCategoriesAndTagsToEditModal();
     });
 
+    /* --------------------- Добавление нового тэга по enter -------------------*/
 
     EDIT_TAGS.on('keyup', 'input[name="tag-name"]', function(event){
       if(event.keyCode === 13){
@@ -169,41 +177,43 @@ $(document).ready(function () {
       }
     });
 
+    /* --------------------- Добавление нового тэга по клике на кнопку -------------------*/
+
     EDIT_TAGS.on('click', 'button.btn.btn-success', function(event){
       event.preventDefault();
       event.stopPropagation();
       appendNewTag( $(this));
     });
 
-    // TAGCONTAINER.on('click', '.tag', function (event) {  selectTag($(this)) });
-
-    /*----------------- Удаление тэга из БД пр клике на крестик -------------------------*/
+    /*----------------- Удаление тэга -------------------------*/
 
     EDIT_TAGS.on('click', '.tag > .close', function (event) {
-
-      let id = $(this).parent().data().id.toString();
-
-      let objIndex = currentCategoriesAndTags.findIndex((obj => obj.name === $(this).parent().data().category));
-      let tagIndex = currentCategoriesAndTags[objIndex].tags.findIndex((obj => obj.id === id));
-
-      if (id.indexOf('new') === -1 ) {
-
-        currentCategoriesAndTags[objIndex].tags[tagIndex].isDelete = true;
-      } else {
-        currentCategoriesAndTags[objIndex].tags.splice(tagIndex, 1);
-      }
-
-      $(this).parent().hide();
-
+      deleteTagFromEdit($(this))
     });
 
 
-    // SELECTEDTAGS.on('click', '.tag > .close', function (event) {  removeSelectedTag($(this).parent()) });
-    /*--------------------- Добавление нового тэга при клике на кнопку "Добавить" --------------*/
-    // $('*[data-btn-type="btn-new-tag"]').on('click',  function (event) { addNewTag() });
+  }
 
+  /*------------------- Удаление тэга ---------------------------*/
+
+  function deleteTagFromEdit(area) {
+
+    let id = area.parent().data().id.toString();
+
+    let objIndex = currentCategoriesAndTags.findIndex((obj => obj.name === area.parent().data().category));
+    let tagIndex = currentCategoriesAndTags[objIndex].tags.findIndex((obj => obj.id === id));
+
+    if (id.indexOf('new') === -1 ) {
+
+      currentCategoriesAndTags[objIndex].tags[tagIndex].isDelete = true;
+    } else {
+      currentCategoriesAndTags[objIndex].tags.splice(tagIndex, 1);
+    }
+
+    area.parent().hide();
 
   }
+  /*--------------------------- Сохранение изменений в тэгах ----------------------*/
 
   function saveTagsChanges() {
 
@@ -253,6 +263,8 @@ $(document).ready(function () {
 
   }
 
+  /*------------------------ Добавление нового тэга ----------------------------------*/
+
   function appendNewTag(area) {
 
     let input = area.parents('.card').find('input[name="tag-name"]');
@@ -296,6 +308,7 @@ $(document).ready(function () {
     }
 
   }
+
   /*---------------- Сохранение файла на сервер и открытие окна редактирования --------------------------*/
 
   function uploadFile() {
@@ -490,7 +503,9 @@ $(document).ready(function () {
           data-name="${ tag.name }"
           data-id="${ tag.id }">
           ${ tag.name }
-          <span aria-hidden="true">&times;</span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
         </span>`;
         category += tagTemplate;
       });
