@@ -139,7 +139,7 @@ $(document).ready(function () {
       askDeleteTrack($(this).parents('.card').data().id)
     });
 
-    /*--------------------- Открытие категории с тэгами в окне редактирования ---------------------*/ъ
+    /*--------------------- Открытие категории с тэгами в окне редактирования ---------------------*/
 
     EDIT_TAGS.on('click', 'button.btn.btn-link', function (event) {
       $(this).parents('.card').find('>.collapse').collapse('toggle');
@@ -511,12 +511,12 @@ $(document).ready(function () {
       });
 
       category +=`<a class="btn" >
-                <span class="fas fa-plus-circle btn-new-tag" ></span>
+                <span class="fas fa-plus btn-new-tag" ></span>
               </a>
 
               <div class="collapse mt-3" >
                   <form class="form-row was-validated"  novalidate="">
-                      <div class="col-8">
+                      <div class="col-7">
                           <label for="validationCustom01">Название</label>
                           <input id="validationCustom01" type="text" class="form-control" placeholder="Название тэга" name="tag-name" required>
                           <div class="invalid-feedback">
@@ -527,9 +527,9 @@ $(document).ready(function () {
                           <label for="validationCustom02">Цвет</label>
                           <input id="validationCustom02" type="color" value="#e66465" class="form-control" placeholder="Цвет тэга" name="tag-color">
                       </div>
-                      <div class="col-2">
+                      <div class="col-3">
                           <button type="button" class="btn btn-success" >
-                              <i class="fas fa-chevron-down text-light"></i>
+                              Добавить
                           </button>
                       </div>
                   </form>
@@ -561,12 +561,12 @@ $(document).ready(function () {
   function toggleIcon(area) {
     let icon = area.find('a.btn span');
 
-    if (icon.hasClass('fa-plus-circle')) {
-      icon.removeClass('fa-plus-circle');
-      icon.addClass('fa-times-circle');
+    if (icon.hasClass('fa-plus')) {
+      icon.removeClass('fa-plus');
+      icon.addClass('fa-times');
     } else {
-      icon.addClass('fa-plus-circle');
-      icon.removeClass('fa-times-circle');
+      icon.addClass('fa-plus');
+      icon.removeClass('fa-times');
     }
   }
   /*------------------------ Получение и вывод тэгов-----------------------------------------*/
