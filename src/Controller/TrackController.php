@@ -78,7 +78,7 @@ class TrackController extends AbstractController
 
     $track->updateTrackByID($fileID,  $comment);
 
-    return $this->json(['status' => "OK", 'message' => [], 'data' => ["new" => $newTags, "deleted" => $deletedTags]]);
+    return $this->json(['status' => "OK", 'message' => [], 'data' => []]);
   }
 
   /*
