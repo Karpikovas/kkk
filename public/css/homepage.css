@@ -77,19 +77,10 @@ div.card-header a {
     font-size: 18px;
 }
 
+button.btn.btn-success {
+    margin-top: 2rem;
+}
 
-input[type="color"] {
-    -webkit-appearance: none;
-    border: none;
-    width: calc(2.25rem + 2px);
-    height: calc(2.25rem + 2px);
-}
-input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-input[type="color"]::-webkit-color-swatch {
-    border: none;
-}
 
 @media (min-width: 992px) {
     .sidenav {

@@ -10,14 +10,14 @@ function Player() {
   /*------------------События интерфейса аудио-------------------------*/
   function bindAudioEvents(audioControl) {
 
-    if (currentAudioControl === undefined) {
-      currentAudioControl = audioControl;
-      currentAudioControl[0].enable();
-    }
-
     audioControl.on('play', () => {
 
-      if (currentAudioControl !== audioControl) {
+      if (currentAudioControl === undefined) {
+        currentAudioControl = audioControl;
+        currentAudioControl[0].enable();
+        audioElement[0].src = `tracks/download/${ audioControl.parents('.card').data().id }`;
+        audioElement[0].load();
+      } else if (currentAudioControl !== audioControl) {
         if (!audioElement[0].paused) {
           currentAudioControl[0].togglePlay();
           audioElement[0].pause();
